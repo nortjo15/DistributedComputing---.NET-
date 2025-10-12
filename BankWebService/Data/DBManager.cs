@@ -12,9 +12,13 @@ namespace BankWebService.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(@"Data Source = Accounts.db;");
+            optionsBuilder.UseSqlite(@"Data Source = UserProfiles.db;");
+            optionsBuilder.UseSqlite(@"Data Source = Transactions.db;");
         }
 
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         // Seed x accounts, y transactions, z user profiles
         // Challenge here is in linking the creation of everything eg.
