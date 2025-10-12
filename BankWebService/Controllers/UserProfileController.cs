@@ -1,6 +1,7 @@
 ﻿using BankWebService.Data;
 using BankWebService.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BankWebService.Controllers
 {
@@ -15,7 +16,9 @@ namespace BankWebService.Controllers
             _context = context;
         }
 
+        // TODO Implement
         // Create User Profile
+        // POST: api/userprofile/create_profile
         [HttpPost("create_profile")]
         public async Task<IActionResult> CreateProfile()
         {
@@ -23,31 +26,99 @@ namespace BankWebService.Controllers
         }
 
         // Get User Profile By Username
+        // GET: api/userprofile/{username}
         [HttpGet("{username}")]
-        public async Task<IActionResult> GetProfileByUsername(string username)
+        public async Task<ActionResult<UserProfile>> GetProfileByUsername(string username)
         {
-            return NotFound();
+            if (_context.UserProfiles == null)
+            {
+                return NotFound();
+            }
+
+            var account = await _context.UserProfiles.FindAsync(username);
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            return account;
         }
 
         // Get User Profile By Email
+        // GET: api/userprofile/{email}
         [HttpGet("{email}")]
-        public async Task<IActionResult> GetProfileByEmail(string email)
+        public async Task<ActionResult<UserProfile>> GetProfileByEmail(string email)
         {
-            return NotFound();
+            if (_context.UserProfiles == null)
+            {
+                return NotFound();
+            }
+
+            var account = await _context.UserProfiles.FindAsync(email);
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            return account;
         }
 
         // Update User Profile
-        [HttpPut("{accountNumber}")]
-        public async Task<IActionResult> UpdateUser(string username)
+        // PUT: api/userprofile/{username}
+        [HttpPut("{username}")]
+        public async Task<IActionResult> UpdateUser(string username, UserProfile profile)
         {
-            return NotFound();
+            if (username != profile.Username)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(profile).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProfileExists(username))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         // Delete User Profile
-        [HttpDelete("{accountNumber}")]
+        // DELETE: api/userprofile/{username}
+        [HttpDelete("{username}")]
         public async Task<IActionResult> DeleteUser(string username)
         {
-            return NotFound();
+            if (_context.UserProfiles == null)
+            {
+                return NotFound();
+            }
+
+            var profile = await _context.UserProfiles.FindAsync(username);
+            if (profile == null)
+            {
+                return NotFound();
+            }
+
+            _context.UserProfiles.Remove(profile);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool ProfileExists(string username)
+        {
+            return (_context.UserProfiles?.Any(e => e.Username == username)).GetValueOrDefault();
         }
     }
 }
