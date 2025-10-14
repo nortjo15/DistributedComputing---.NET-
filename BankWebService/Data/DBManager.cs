@@ -10,8 +10,52 @@ namespace BankWebService.Data
         private int transactionNumber = 100;
         private int profileNumber = 100;
 
-        // Connection string used by the CreateAccountsTable method
-        private static readonly string accountsConnectionString = "Data Source=mydatabase.db;";
+        // Connection string used by the Create*Table methods
+        // Force the database file to live in the project root (3 levels up from bin/Debug/net6.0)
+        private static readonly string DbFileName = "mydatabase.db";
+        private static readonly string DbFullPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", DbFileName));
+        private static readonly string accountsConnectionString = $"Data Source={DbFullPath};";
+        
+        // Create table (UserProfiles)
+        public static bool CreateUserProfileTable()
+        {
+            try
+            {
+                using (var connection = new SqliteConnection(accountsConnectionString))
+                {
+                    connection.Open();
+
+                    using (var command = connection.CreateCommand())
+                    {
+                        // SQL command to create a table named "Accounts"
+                        command.CommandText = @"
+                        CREATE TABLE IF NOT EXISTS UserProfiles (
+                        Username TEXT,
+                        Email TEXT,
+                        Address TEXT,
+                        Phone TEXT,
+                        Picture BLOB,
+                        Password TEXT NOT NULL,
+                        PRIMARY KEY (Username, Email)
+                        );";
+
+                        // Execute the SQL command to create the table
+                        command.ExecuteNonQuery();
+                    }
+
+                    connection.Close();
+                }
+
+                Console.WriteLine("UserProfile table created successfully.");
+                Console.WriteLine($"DB created: True. Path: {DbFullPath}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                return false; // Create table failed
+            }
+        }
 
         // Create table (Accounts)
         public static bool CreateAccountsTable()
@@ -28,9 +72,11 @@ namespace BankWebService.Data
                         command.CommandText = @"
                         CREATE TABLE IF NOT EXISTS Accounts (
                         AccountNumber INTEGER PRIMARY KEY,
-                        Balance REAL,
-                        Username TEXT,
-                        Email TEXT
+                        Balance REAL NOT NULL DEFAULT 0,
+                        Username TEXT NOT NULL,
+                        Email TEXT NOT NULL,
+                        FOREIGN KEY (Username) REFERENCES UserProfiles(Username)
+                            ON UPDATE CASCADE ON DELETE RESTRICT
                         );";
 
                         // Execute the SQL command to create the table
@@ -41,6 +87,47 @@ namespace BankWebService.Data
                 }
 
                 Console.WriteLine("Accounts table created successfully.");
+                Console.WriteLine($"DB created: True. Path: {DbFullPath}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                return false; // Create table failed
+            }
+        }
+
+        // Create table (transactions)
+        public static bool CreateTransactionsTable()
+        {
+            try
+            {
+                using (var connection = new SqliteConnection(accountsConnectionString))
+                {
+                    connection.Open();
+
+                    using (var command = connection.CreateCommand())
+                    {
+                        // SQL command to create a table named "Transactions"
+                        command.CommandText = @"
+                        CREATE TABLE IF NOT EXISTS Transactions (
+                        TransactionId INTEGER PRIMARY KEY,
+                        AccountNumber INTEGER NOT NULL,
+                        Type TEXT NOT NULL CHECK (Type IN ('Deposit','Withdraw')),
+                        Amount REAL NOT NULL,
+                        FOREIGN KEY (AccountNumber) REFERENCES Accounts(AccountNumber)
+                            ON UPDATE CASCADE ON DELETE CASCADE
+                        );";
+
+                        // Execute the SQL command to create the table
+                        command.ExecuteNonQuery();
+                    }
+
+                    connection.Close();
+                }
+
+                Console.WriteLine("Transactions table created successfully.");
+                Console.WriteLine($"DB created: True. Path: {DbFullPath}");
                 return true;
             }
             catch (Exception ex)
@@ -63,7 +150,7 @@ namespace BankWebService.Data
                     {
                         // SQL command to insert data into the "Accounts" table
                         command.CommandText = @"
-                        INSERT INTO mydatabase (AccountNumber, Balance, Username, Email)
+                        INSERT INTO Accounts (AccountNumber, Balance, Username, Email)
                         VALUES (@AccountNumber, @Balance, @Username, @Email);";
 
                         // Define parameters for the query
@@ -90,6 +177,37 @@ namespace BankWebService.Data
             }
 
             return false; // Insertion failed
+        }
+
+        //Use this func to reset the database during testing
+        public static bool RecreateSchema()
+        {
+            try
+            {
+                using var connection = new SqliteConnection(accountsConnectionString);
+                connection.Open();
+
+                using (var drop = connection.CreateCommand())
+                {
+                    drop.CommandText = @"
+                    PRAGMA foreign_keys = OFF;
+                    DROP TABLE IF EXISTS Transactions;
+                    DROP TABLE IF EXISTS Accounts;
+                    DROP TABLE IF EXISTS UserProfiles;
+                    PRAGMA foreign_keys = ON;";
+                    drop.ExecuteNonQuery();
+                }
+
+                var ok = CreateUserProfileTable();
+                ok &= CreateAccountsTable();
+                ok &= CreateTransactionsTable();
+                return ok;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error recreating schema: " + ex.Message);
+                return false;
+            }
         }
 
 

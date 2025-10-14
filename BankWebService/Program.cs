@@ -23,8 +23,14 @@ app.UseAuthorization();
 //    name: "default",
 //    pattern: "{controller=Account}/{action=Index}/{id?}");
 
-//testing db creation
+//testing db creation - DELETE LATER
+var okSchema = DBManager.RecreateSchema();
+Console.WriteLine($"DB Schema Recreated: {okSchema}. Path: {Path.GetFullPath("mydatabase.db")}");
+var ok2 = DBManager.CreateUserProfileTable();
+Console.WriteLine($"DB created: {ok2}. Path: {Path.GetFullPath("mydatabase.db")}");
 var ok = DBManager.CreateAccountsTable();
 Console.WriteLine($"DB created: {ok}. Path: {Path.GetFullPath("mydatabase.db")}");
+var ok1 = DBManager.CreateTransactionsTable();
+Console.WriteLine($"DB created: {ok1}. Path: {Path.GetFullPath("mydatabase.db")}");
 
 app.Run();
