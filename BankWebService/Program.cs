@@ -23,4 +23,8 @@ app.UseAuthorization();
 //    name: "default",
 //    pattern: "{controller=Account}/{action=Index}/{id?}");
 
+//testing db creation
+var ok = DBManager.CreateAccountsTable();
+Console.WriteLine($"DB created: {ok}. Path: {Path.GetFullPath("mydatabase.db")}");
+
 app.Run();
