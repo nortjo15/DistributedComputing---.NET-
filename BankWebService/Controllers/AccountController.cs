@@ -19,9 +19,15 @@ namespace BankWebService.Controllers
         // Create Account // TODO
         // Post: api/account/create_account
         [HttpPost("create_account")]
-        public async Task<IActionResult> CreateAccount()
+        public async Task<ActionResult<Account>> CreateAccount(Account account)
         {
-            return NotFound();
+            if(_context.Accounts == null)
+            {
+                return Problem("Entity set 'DBManager.Accounts'  is null.");
+            }
+            _context.Accounts.Add(account);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction("GetAccount", new { accountNumber = account.AccountNumber }, account );
         }
 
         // Get Account by Account Number
