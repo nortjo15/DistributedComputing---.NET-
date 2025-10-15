@@ -16,7 +16,6 @@ namespace BankWebService.Controllers
             _context = context;
         }
 
-        // TODO Implement
         // Create User Profile
         // POST: api/userprofile/create_profile
         [HttpPost("create_profile")]
