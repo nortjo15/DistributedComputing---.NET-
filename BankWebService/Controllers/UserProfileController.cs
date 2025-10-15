@@ -20,9 +20,15 @@ namespace BankWebService.Controllers
         // Create User Profile
         // POST: api/userprofile/create_profile
         [HttpPost("create_profile")]
-        public async Task<IActionResult> CreateProfile()
+        public async Task<ActionResult<UserProfile>> CreateProfile(UserProfile profile)
         {
-            return NotFound();
+            if (_context.UserProfiles == null)
+            {
+                return Problem("Entity set 'DBManager.UserProfiles'  is null.");
+            }
+            _context.UserProfiles.Add(profile);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction("GetProfileByUsername", new { username = profile.Username }, profile);
         }
 
         // Get User Profile By Username
