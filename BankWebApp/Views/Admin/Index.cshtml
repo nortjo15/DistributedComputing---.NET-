@@ -1,0 +1,31 @@
+@model IEnumerable<BankWebApp.Controllers.UserProfileDto>
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h1>Admin dashboard</h1>
+<p>This page calls the BankWebService API and lists user profiles.</p>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Username</td>
+                <td>@u.Email</td>
+                <td>@u.Address</td>
+                <td>@u.Phone</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

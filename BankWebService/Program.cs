@@ -12,6 +12,13 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Seed one admin account in the WebService
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DBManager>();
+    await SeedData.EnsureAdminAsync(db);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
