@@ -1,0 +1,5 @@
+Copy+paste these commands in order into the NuGet Package Manager Console
+Drop-Database
+Remove-Migration
+Add-Migration SeedRefresh
+Update-Database

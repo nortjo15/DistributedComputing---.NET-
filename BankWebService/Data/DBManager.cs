@@ -10,9 +10,11 @@ namespace BankWebService.Data
 {
     public class DBManager : DbContext
     {
+        private const int numberOfUsers = 5;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlite(@"Data Source = BankDatabase.db;"); }
+            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlite(@"Data Source=../BankWebService/BankDatabase.db;"); }
         }
 
         public DbSet<Account> Accounts { get; set; }
@@ -35,18 +37,18 @@ namespace BankWebService.Data
         {
             mb.Entity<UserProfile>(e =>
             {
-                e.ToTable("User Profiles");
+                e.ToTable("User_Profiles");
                 e.HasKey(x => x.Username);
                 e.HasIndex(x => x.Email).IsUnique();
                 e.Property(x => x.Address).HasMaxLength(200);
                 e.Property(x => x.Phone).HasMaxLength(15);
-                e.Property(x => x.Picture).HasMaxLength(500);   //Store url not image
+                e.Property(x => x.Picture).HasMaxLength(500);
                 e.Property(x => x.Password).HasMaxLength(30).IsRequired();
             });
 
             mb.Entity<Account>(e =>
             {
-                e.ToTable("Bank Accounts");
+                e.ToTable("Bank_Accounts");
                 e.HasKey(x => x.AccountNumber);
                 e.Property(x => x.Balance).IsRequired();
                 e.HasOne(a => a.UserProfile)
@@ -62,15 +64,118 @@ namespace BankWebService.Data
                     "Type IN ('Deposit','Withdraw')"));
 
                 e.HasKey(t => t.TransactionId);
-
-                e.Property(t => t.Amount).IsRequired();            
-                e.Property(t => t.Type).HasMaxLength(10).IsRequired().HasConversion<String>(); // add HasConversion<string>() if enum
+                e.Property(t => t.Amount).IsRequired();
+                e.Property(t => t.Type).HasMaxLength(10).IsRequired().HasConversion<string>();
 
                 e.HasOne(t => t.Account)
-                 .WithMany(a => a.Transactions)
-                 .HasForeignKey(t => t.AccountNumber)
-                 .OnDelete(DeleteBehavior.Cascade);
+                    .WithMany(a => a.Transactions)
+                    .HasForeignKey(t => t.AccountNumber)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
+
+            /* ---------- DATA SEEDING ----------*/
+            var rand = new Random();
+
+            var firstNames = new List<string>
+            {
+                "James","Michael","John","Robert","David","William","Richard",
+                "Joseph","Thomas","Christopher","Mary","Patricia","Jennifer",
+                "Linda","Elizabeth","Barbara","Susan","Jessica","Karen","Sarah"
+            };
+
+            var lastNames = new List<string>
+            {
+                "Flores","Green","Adams","Nelson","Baker","Hall","Rivera","Campbell",
+                "Mitchell","Carter","Roberts","Gomez","Phillips","Evans","Turner",
+                "Diaz","Parker","Cruz","Edwards","Collins","Reyes"
+            };
+
+            /* ----- profile picture folder (dynamic) ----- */
+            string projectRoot = AppContext.BaseDirectory;
+
+            // Go up to the solution root and into resources/ProfilePictures
+            string pictureRoot = Path.GetFullPath(
+                Path.Combine(projectRoot, "..", "..", "..", "..", "resources", "ProfilePictures")
+            );
+
+            // Build list manually since pictures are named 1.jpg through 5.jpg
+            var availablePics = Enumerable.Range(1, 5)
+                .Select(i => Path.Combine(pictureRoot, $"{i}.jpg"))
+                .Where(File.Exists)
+                .ToArray();
+
+            // Fallback if no pictures found. Uses default.jpg
+            if (availablePics.Length == 0)
+            {
+                availablePics = new[] { Path.Combine(pictureRoot, "default.jpg") };
+            }
+
+            int accountIdCounter = 1;
+            int transactionIdCounter = 1;
+
+            var users = new List<UserProfile>();
+            var accounts = new List<Account>();
+            var transactions = new List<Transaction>();
+
+            for (int i = 0; i < numberOfUsers; i++)
+            {
+                string first = firstNames[rand.Next(firstNames.Count)];
+                string last = lastNames[rand.Next(lastNames.Count)];
+                string username = $"{first.ToLower()}{last.ToLower()}{rand.Next(100, 999)}";
+                string email = $"{first.ToLower()}_{last.ToLower()}@email.com";
+
+                // pick random picture from 1.jpg–6.jpg
+                string picture = availablePics[rand.Next(availablePics.Length)];
+
+                var user = new UserProfile
+                {
+                    Username = username,
+                    Email = email,
+                    Address = $"{rand.Next(1, 200)} {last} Street, City {rand.Next(1, 10)}",
+                    Phone = $"04{rand.Next(10000000, 99999999)}",
+                    Picture = picture,
+                    Password = $"pass{rand.Next(1000, 9999)}"
+                };
+                users.Add(user);
+
+                // 1–3 accounts per user
+                int numAccounts = rand.Next(1, 4);
+                for (int a = 0; a < numAccounts; a++)
+                {
+                    var account = new Account
+                    {
+                        AccountNumber = accountIdCounter,
+                        Username = user.Username,
+                        Balance = rand.Next(100, 10000),
+                        Email = user.Email
+                    };
+                    accounts.Add(account);
+
+                    // 1–10 transactions per account
+                    int numTransactions = rand.Next(1, 11);
+                    for (int t = 0; t < numTransactions; t++)
+                    {
+                        var txType = (rand.Next(2) == 0)
+                            ? Transaction.TxType.Deposit
+                            : Transaction.TxType.Withdraw;
+
+                        transactions.Add(new Transaction
+                        {
+                            TransactionId = transactionIdCounter++,
+                            AccountNumber = account.AccountNumber,
+                            Type = txType,
+                            Amount = rand.Next(10, 1000)
+                        });
+                    }
+
+                    accountIdCounter++;
+                }
+            }
+
+            // ----- apply seed data -----
+            mb.Entity<UserProfile>().HasData(users);
+            mb.Entity<Account>().HasData(accounts);
+            mb.Entity<Transaction>().HasData(transactions);
         }
 
 

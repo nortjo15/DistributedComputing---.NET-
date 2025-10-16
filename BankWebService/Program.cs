@@ -1,10 +1,13 @@
 using BankWebService.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DBManager>();
+builder.Services.AddDbContext<DBManager>(options =>
+    options.UseSqlite("Data Source=BankDatabase.db"));
 
 var app = builder.Build();
 
