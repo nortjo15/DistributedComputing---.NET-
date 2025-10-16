@@ -9,21 +9,33 @@ builder.Services.AddDbContext<DBManager>();
 builder.Services.AddDbContext<DBManager>(options =>
     options.UseSqlite("Data Source=BankDatabase.db"));
 
+// Add API Explorer services for Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-    //app.UseExceptionHandler("/Home/Error");
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+}
+
 app.UseStaticFiles();
 
 app.UseRouting();
 
 app.UseAuthorization();
 
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=Account}/{action=Index}/{id?}");
+// Enable both MVC and API routing
+app.MapControllers();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
