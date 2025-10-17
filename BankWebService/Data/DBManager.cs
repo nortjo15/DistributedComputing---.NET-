@@ -171,6 +171,27 @@ namespace BankWebService.Data
                 }
             }
 
+            // Ensure specific users always exist in seed (so migrations always include them)
+            users.Add(new UserProfile
+            {
+                Username = "BankAdmin",
+                Email = "admin@bank.local",
+                Address = "Head Office",
+                Phone = "+0000000000",
+                Picture = "/images/admin.png",
+                Password = "ChangeMe!123"
+            });
+
+            users.Add(new UserProfile
+            {
+                Username = "MoeDegrasse",
+                Email = "MoeDegrasse@email.com",
+                Address = "17 Harper Street, City 2",
+                Phone = "0444122322",
+                Picture = Path.Combine(pictureRoot, "1.jpg"),
+                Password = "pass12"
+            });
+
             // ----- apply seed data -----
             mb.Entity<UserProfile>().HasData(users);
             mb.Entity<Account>().HasData(accounts);
