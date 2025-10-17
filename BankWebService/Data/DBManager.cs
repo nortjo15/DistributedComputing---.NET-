@@ -15,6 +15,7 @@ namespace BankWebService.Data
         private const int maxAccounts = 3;      //Maximum number of accounts seeded in
         private const int maxTransactions = 10; //Maximum number of transactions seeded in
 
+        public DBManager(DbContextOptions<DBManager> options) : base(options) { }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Transaction> Transactions { get; set; }

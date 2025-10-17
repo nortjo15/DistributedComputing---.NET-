@@ -5,9 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<DBManager>();
 builder.Services.AddDbContext<DBManager>(options =>
-    options.UseSqlite("Data Source=BankDatabase.db"));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add API Explorer services for Swagger
 builder.Services.AddEndpointsApiExplorer();
