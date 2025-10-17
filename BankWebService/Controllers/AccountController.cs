@@ -102,6 +102,20 @@ namespace BankWebService.Controllers
             return NoContent();
         }
 
+        // GET: api/account/all
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<Account>>> GetAll()
+        {
+            if (_context.Accounts == null)
+            {
+                return NotFound();
+            }
+
+            return await _context.Accounts
+                                 .AsNoTracking()
+                                 .ToListAsync();
+        }
+
         private bool AccountExists(int id)
         {
             return (_context.Accounts?.Any(e => e.AccountNumber == id)).GetValueOrDefault();

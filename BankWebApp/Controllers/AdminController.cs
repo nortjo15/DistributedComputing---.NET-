@@ -1,3 +1,4 @@
+using BankWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Json;
 
@@ -17,16 +18,35 @@ namespace BankWebApp.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _clientFactory.CreateClient("BankApi");
-            var users = await client.GetFromJsonAsync<List<UserProfileDto>>("api/userprofile/all");
-            return View(users ?? new List<UserProfileDto>());
-        }
-    }
 
-    public class UserProfileDto
-    {
-        public string Username { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Address { get; set; } = string.Empty;
-        public string Phone { get; set; } = string.Empty;
+            // fetch users, transactions, accounts concurrently
+            var usersTask = client.GetFromJsonAsync<List<UserProfileDto>>("api/userprofile/all");
+            var txTask = client.GetFromJsonAsync<List<TransactionDto>>("api/transaction/all");
+            var accountsTask = client.GetFromJsonAsync<List<AccountDto>>("api/account/all");
+
+            try
+            {
+                await Task.WhenAll(usersTask!, txTask!, accountsTask!);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to fetch data for admin dashboard");
+            }
+
+            var model = new AdminDashboardViewModel
+            {
+                Users = usersTask?.Status == TaskStatus.RanToCompletion && usersTask.Result != null
+                    ? usersTask.Result
+                    : new List<UserProfileDto>(),
+                Transactions = txTask?.Status == TaskStatus.RanToCompletion && txTask.Result != null
+                    ? txTask.Result
+                    : new List<TransactionDto>(),
+                Accounts = accountsTask?.Status == TaskStatus.RanToCompletion && accountsTask.Result != null
+                    ? accountsTask.Result
+                    : new List<AccountDto>()
+            };
+
+            return View(model);
+        }
     }
 }
