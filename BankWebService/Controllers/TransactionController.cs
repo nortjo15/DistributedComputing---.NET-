@@ -132,5 +132,19 @@ namespace BankWebService.Controllers
 
             return transaction;
         }
+
+        // GET: api/Transaction/all
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetAll()
+        {
+            if (_context.Transactions == null)
+            {
+                return NotFound();
+            }
+
+            return await _context.Transactions
+                                 .AsNoTracking()
+                                 .ToListAsync();
+        }
     }
 }
