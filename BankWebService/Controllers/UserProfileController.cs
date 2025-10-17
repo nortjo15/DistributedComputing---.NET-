@@ -16,6 +16,16 @@ namespace BankWebService.Controllers
             _context = context;
         }
 
+        // List all User Profiles
+        // GET: api/userprofile/all
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<UserProfile>>> GetAll()
+        {
+            if (_context.UserProfiles == null)
+                return NotFound();
+            return await _context.UserProfiles.AsNoTracking().ToListAsync();
+        }
+
         // Create User Profile
         // POST: api/userprofile/create_profile
         [HttpPost("create_profile")]
@@ -31,8 +41,8 @@ namespace BankWebService.Controllers
         }
 
         // Get User Profile By Username
-        // GET: api/userprofile/{username}
-        [HttpGet("{username}")]
+        // GET: api/userprofile/by-username/{username}
+        [HttpGet("by-username/{username}")]
         public async Task<ActionResult<UserProfile>> GetProfileByUsername(string username)
         {
             if (_context.UserProfiles == null)
@@ -50,8 +60,8 @@ namespace BankWebService.Controllers
         }
 
         // Get User Profile By Email
-        // GET: api/userprofile/{email}
-        [HttpGet("{email}")]
+        // GET: api/userprofile/by-email/{email}
+        [HttpGet("by-email/{email}")]
         public async Task<ActionResult<UserProfile>> GetProfileByEmail(string email)
         {
             if (_context.UserProfiles == null)
@@ -59,7 +69,7 @@ namespace BankWebService.Controllers
                 return NotFound();
             }
 
-            var account = await _context.UserProfiles.FindAsync(email);
+            var account = await _context.UserProfiles.FirstOrDefaultAsync(u => u.Email == email);
             if (account == null)
             {
                 return NotFound();
