@@ -10,12 +10,10 @@ namespace BankWebService.Data
 {
     public class DBManager : DbContext
     {
-        private const int numberOfUsers = 5;
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlite(@"Data Source=../BankWebService/BankDatabase.db;"); }
-        }
+        private const int numberOfUsers = 5;    //Number of users seeded into database
+        private const int numberOfIcons = 5;    //How many profile icons there are
+        private const int maxAccounts = 3;      //Maximum number of accounts seeded in
+        private const int maxTransactions = 10; //Maximum number of transactions seeded in
 
         public DbSet<Account> Accounts { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
@@ -99,7 +97,7 @@ namespace BankWebService.Data
             );
 
             // Build list manually since pictures are named 1.jpg through 5.jpg
-            var availablePics = Enumerable.Range(1, 5)
+            var availablePics = Enumerable.Range(1, numberOfIcons)
                 .Select(i => Path.Combine(pictureRoot, $"{i}.jpg"))
                 .Where(File.Exists)
                 .ToArray();
@@ -124,7 +122,7 @@ namespace BankWebService.Data
                 string username = $"{first.ToLower()}{last.ToLower()}{rand.Next(100, 999)}";
                 string email = $"{first.ToLower()}_{last.ToLower()}@email.com";
 
-                // pick random picture from 1.jpg–6.jpg
+                // pick random picture
                 string picture = availablePics[rand.Next(availablePics.Length)];
 
                 var user = new UserProfile
@@ -138,8 +136,8 @@ namespace BankWebService.Data
                 };
                 users.Add(user);
 
-                // 1–3 accounts per user
-                int numAccounts = rand.Next(1, 4);
+                // How many accounts for this user
+                int numAccounts = rand.Next(1, maxAccounts + 1);
                 for (int a = 0; a < numAccounts; a++)
                 {
                     var account = new Account
@@ -151,8 +149,8 @@ namespace BankWebService.Data
                     };
                     accounts.Add(account);
 
-                    // 1–10 transactions per account
-                    int numTransactions = rand.Next(1, 11);
+                    // How many transactions for this account
+                    int numTransactions = rand.Next(1, maxTransactions);
                     for (int t = 0; t < numTransactions; t++)
                     {
                         var txType = (rand.Next(2) == 0)
