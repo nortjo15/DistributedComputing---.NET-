@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BankWebService.Migrations
 {
     [DbContext(typeof(DBManager))]
-    [Migration("20251018085841_SeedRefresh")]
+    [Migration("20251018150538_SeedRefresh")]
     partial class SeedRefresh
     {
         /// <inheritdoc />
@@ -50,186 +50,130 @@ namespace BankWebService.Migrations
                         new
                         {
                             AccountNumber = 1,
-                            Balance = 8863m,
-                            Email = "jessica_campbell@email.com",
-                            Name = "Jessica's Account 1",
-                            Username = "jessicacampbell185"
+                            Balance = 7781m,
+                            Email = "elizabeth_rivera@email.com",
+                            Name = "Elizabeth's Account 1",
+                            Username = "elizabethrivera552"
                         },
                         new
                         {
                             AccountNumber = 2,
-                            Balance = 7353m,
-                            Email = "jessica_campbell@email.com",
-                            Name = "Jessica's Account 2",
-                            Username = "jessicacampbell185"
+                            Balance = 2355m,
+                            Email = "elizabeth_edwards@email.com",
+                            Name = "Elizabeth's Account 1",
+                            Username = "elizabethedwards766"
                         },
                         new
                         {
                             AccountNumber = 3,
-                            Balance = 5147m,
-                            Email = "jessica_campbell@email.com",
-                            Name = "Jessica's Account 3",
-                            Username = "jessicacampbell185"
+                            Balance = 9163m,
+                            Email = "elizabeth_edwards@email.com",
+                            Name = "Elizabeth's Account 2",
+                            Username = "elizabethedwards766"
                         },
                         new
                         {
                             AccountNumber = 4,
-                            Balance = 2900m,
-                            Email = "jessica_campbell@email.com",
-                            Name = "Jessica's Account 4",
-                            Username = "jessicacampbell185"
+                            Balance = 6405m,
+                            Email = "elizabeth_edwards@email.com",
+                            Name = "Elizabeth's Account 3",
+                            Username = "elizabethedwards766"
                         },
                         new
                         {
                             AccountNumber = 5,
-                            Balance = 2064m,
-                            Email = "james_diaz@email.com",
-                            Name = "James's Account 1",
-                            Username = "jamesdiaz996"
+                            Balance = 9788m,
+                            Email = "elizabeth_edwards@email.com",
+                            Name = "Elizabeth's Account 4",
+                            Username = "elizabethedwards766"
                         },
                         new
                         {
                             AccountNumber = 6,
-                            Balance = 4756m,
-                            Email = "james_diaz@email.com",
-                            Name = "James's Account 2",
-                            Username = "jamesdiaz996"
+                            Balance = 3359m,
+                            Email = "elizabeth_edwards@email.com",
+                            Name = "Elizabeth's Account 5",
+                            Username = "elizabethedwards766"
                         },
                         new
                         {
                             AccountNumber = 7,
-                            Balance = 5408m,
-                            Email = "james_diaz@email.com",
-                            Name = "James's Account 3",
-                            Username = "jamesdiaz996"
+                            Balance = 6700m,
+                            Email = "jennifer_cruz@email.com",
+                            Name = "Jennifer's Account 1",
+                            Username = "jennifercruz522"
                         },
                         new
                         {
                             AccountNumber = 8,
-                            Balance = 6580m,
-                            Email = "sarah_diaz@email.com",
-                            Name = "Sarah's Account 1",
-                            Username = "sarahdiaz655"
+                            Balance = 9177m,
+                            Email = "michael_reyes@email.com",
+                            Name = "Michael's Account 1",
+                            Username = "michaelreyes839"
                         },
                         new
                         {
                             AccountNumber = 9,
-                            Balance = 1821m,
-                            Email = "sarah_diaz@email.com",
-                            Name = "Sarah's Account 2",
-                            Username = "sarahdiaz655"
+                            Balance = 5072m,
+                            Email = "michael_reyes@email.com",
+                            Name = "Michael's Account 2",
+                            Username = "michaelreyes839"
                         },
                         new
                         {
                             AccountNumber = 10,
-                            Balance = 8267m,
-                            Email = "sarah_diaz@email.com",
-                            Name = "Sarah's Account 3",
-                            Username = "sarahdiaz655"
+                            Balance = 7051m,
+                            Email = "michael_reyes@email.com",
+                            Name = "Michael's Account 3",
+                            Username = "michaelreyes839"
                         },
                         new
                         {
                             AccountNumber = 11,
-                            Balance = 7663m,
-                            Email = "jennifer_roberts@email.com",
-                            Name = "Jennifer's Account 1",
-                            Username = "jenniferroberts143"
+                            Balance = 570m,
+                            Email = "jessica_parker@email.com",
+                            Name = "Jessica's Account 1",
+                            Username = "jessicaparker180"
                         },
                         new
                         {
                             AccountNumber = 12,
-                            Balance = 7236m,
-                            Email = "richard_hall@email.com",
-                            Name = "Richard's Account 1",
-                            Username = "richardhall302"
+                            Balance = 5645m,
+                            Email = "jessica_parker@email.com",
+                            Name = "Jessica's Account 2",
+                            Username = "jessicaparker180"
                         },
                         new
                         {
                             AccountNumber = 13,
-                            Balance = 1833m,
-                            Email = "richard_hall@email.com",
-                            Name = "Richard's Account 2",
-                            Username = "richardhall302"
+                            Balance = 4469m,
+                            Email = "richard_diaz@email.com",
+                            Name = "Richard's Account 1",
+                            Username = "richarddiaz386"
                         },
                         new
                         {
                             AccountNumber = 14,
-                            Balance = 518m,
-                            Email = "richard_hall@email.com",
-                            Name = "Richard's Account 3",
-                            Username = "richardhall302"
+                            Balance = 6969m,
+                            Email = "patricia_cruz@email.com",
+                            Name = "Patricia's Account 1",
+                            Username = "patriciacruz655"
                         },
                         new
                         {
                             AccountNumber = 15,
-                            Balance = 1891m,
-                            Email = "richard_hall@email.com",
-                            Name = "Richard's Account 4",
-                            Username = "richardhall302"
+                            Balance = 2524m,
+                            Email = "patricia_cruz@email.com",
+                            Name = "Patricia's Account 2",
+                            Username = "patriciacruz655"
                         },
                         new
                         {
                             AccountNumber = 16,
-                            Balance = 5837m,
-                            Email = "richard_hall@email.com",
-                            Name = "Richard's Account 5",
-                            Username = "richardhall302"
-                        },
-                        new
-                        {
-                            AccountNumber = 17,
-                            Balance = 8716m,
-                            Email = "mary_hall@email.com",
-                            Name = "Mary's Account 1",
-                            Username = "maryhall268"
-                        },
-                        new
-                        {
-                            AccountNumber = 18,
-                            Balance = 9141m,
-                            Email = "mary_hall@email.com",
-                            Name = "Mary's Account 2",
-                            Username = "maryhall268"
-                        },
-                        new
-                        {
-                            AccountNumber = 19,
-                            Balance = 1522m,
-                            Email = "mary_hall@email.com",
-                            Name = "Mary's Account 3",
-                            Username = "maryhall268"
-                        },
-                        new
-                        {
-                            AccountNumber = 20,
-                            Balance = 1779m,
-                            Email = "barbara_parker@email.com",
-                            Name = "Barbara's Account 1",
-                            Username = "barbaraparker204"
-                        },
-                        new
-                        {
-                            AccountNumber = 21,
-                            Balance = 5507m,
-                            Email = "barbara_parker@email.com",
-                            Name = "Barbara's Account 2",
-                            Username = "barbaraparker204"
-                        },
-                        new
-                        {
-                            AccountNumber = 22,
-                            Balance = 2384m,
-                            Email = "barbara_parker@email.com",
-                            Name = "Barbara's Account 3",
-                            Username = "barbaraparker204"
-                        },
-                        new
-                        {
-                            AccountNumber = 23,
-                            Balance = 7834m,
-                            Email = "barbara_parker@email.com",
-                            Name = "Barbara's Account 4",
-                            Username = "barbaraparker204"
+                            Balance = 8682m,
+                            Email = "patricia_cruz@email.com",
+                            Name = "Patricia's Account 3",
+                            Username = "patriciacruz655"
                         });
                 });
 
@@ -264,869 +208,1030 @@ namespace BankWebService.Migrations
                         {
                             TransactionId = 1,
                             AccountNumber = 1,
-                            Amount = 88m,
+                            Amount = 575m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 2,
                             AccountNumber = 1,
-                            Amount = 510m,
-                            Type = "Withdraw"
+                            Amount = 35m,
+                            Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 3,
                             AccountNumber = 1,
-                            Amount = 402m,
-                            Type = "Withdraw"
+                            Amount = 769m,
+                            Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 4,
-                            AccountNumber = 2,
-                            Amount = 188m,
+                            AccountNumber = 1,
+                            Amount = 553m,
                             Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 5,
-                            AccountNumber = 2,
-                            Amount = 944m,
-                            Type = "Deposit"
+                            AccountNumber = 1,
+                            Amount = 698m,
+                            Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 6,
-                            AccountNumber = 2,
-                            Amount = 773m,
+                            AccountNumber = 1,
+                            Amount = 522m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 7,
-                            AccountNumber = 2,
-                            Amount = 100m,
+                            AccountNumber = 1,
+                            Amount = 945m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 8,
                             AccountNumber = 2,
-                            Amount = 152m,
+                            Amount = 27m,
                             Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 9,
                             AccountNumber = 2,
-                            Amount = 996m,
-                            Type = "Withdraw"
+                            Amount = 373m,
+                            Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 10,
                             AccountNumber = 2,
-                            Amount = 377m,
+                            Amount = 518m,
                             Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 11,
                             AccountNumber = 2,
-                            Amount = 438m,
+                            Amount = 951m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 12,
                             AccountNumber = 2,
-                            Amount = 67m,
+                            Amount = 75m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 13,
                             AccountNumber = 2,
-                            Amount = 395m,
+                            Amount = 260m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 14,
-                            AccountNumber = 3,
-                            Amount = 126m,
-                            Type = "Withdraw"
+                            AccountNumber = 2,
+                            Amount = 274m,
+                            Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 15,
-                            AccountNumber = 3,
-                            Amount = 280m,
+                            AccountNumber = 2,
+                            Amount = 485m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 16,
-                            AccountNumber = 4,
-                            Amount = 786m,
+                            AccountNumber = 2,
+                            Amount = 811m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 17,
-                            AccountNumber = 4,
-                            Amount = 218m,
+                            AccountNumber = 2,
+                            Amount = 400m,
                             Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 18,
-                            AccountNumber = 4,
-                            Amount = 646m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 19,
-                            AccountNumber = 4,
-                            Amount = 276m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 20,
-                            AccountNumber = 4,
-                            Amount = 798m,
+                            AccountNumber = 2,
+                            Amount = 325m,
                             Type = "Deposit"
                         },
                         new
                         {
+                            TransactionId = 19,
+                            AccountNumber = 3,
+                            Amount = 723m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 20,
+                            AccountNumber = 3,
+                            Amount = 295m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
                             TransactionId = 21,
-                            AccountNumber = 4,
-                            Amount = 49m,
+                            AccountNumber = 3,
+                            Amount = 812m,
                             Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 22,
-                            AccountNumber = 4,
-                            Amount = 476m,
-                            Type = "Withdraw"
+                            AccountNumber = 3,
+                            Amount = 721m,
+                            Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 23,
-                            AccountNumber = 4,
-                            Amount = 144m,
-                            Type = "Withdraw"
+                            AccountNumber = 3,
+                            Amount = 58m,
+                            Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 24,
-                            AccountNumber = 4,
-                            Amount = 915m,
+                            AccountNumber = 3,
+                            Amount = 672m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 25,
-                            AccountNumber = 4,
-                            Amount = 936m,
-                            Type = "Deposit"
+                            AccountNumber = 3,
+                            Amount = 389m,
+                            Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 26,
-                            AccountNumber = 4,
-                            Amount = 524m,
-                            Type = "Deposit"
+                            AccountNumber = 3,
+                            Amount = 423m,
+                            Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 27,
-                            AccountNumber = 5,
-                            Amount = 640m,
+                            AccountNumber = 3,
+                            Amount = 904m,
                             Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 28,
-                            AccountNumber = 5,
-                            Amount = 959m,
-                            Type = "Withdraw"
+                            AccountNumber = 3,
+                            Amount = 312m,
+                            Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 29,
-                            AccountNumber = 5,
-                            Amount = 208m,
-                            Type = "Deposit"
+                            AccountNumber = 4,
+                            Amount = 190m,
+                            Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 30,
-                            AccountNumber = 5,
-                            Amount = 284m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 31,
-                            AccountNumber = 5,
-                            Amount = 362m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 32,
-                            AccountNumber = 5,
-                            Amount = 893m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 33,
-                            AccountNumber = 5,
-                            Amount = 463m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 34,
-                            AccountNumber = 5,
-                            Amount = 447m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 35,
-                            AccountNumber = 5,
-                            Amount = 476m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 36,
-                            AccountNumber = 5,
-                            Amount = 958m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 37,
-                            AccountNumber = 5,
-                            Amount = 474m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 38,
-                            AccountNumber = 6,
-                            Amount = 418m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 39,
-                            AccountNumber = 6,
-                            Amount = 676m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 40,
-                            AccountNumber = 6,
-                            Amount = 555m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 41,
-                            AccountNumber = 6,
-                            Amount = 513m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 42,
-                            AccountNumber = 6,
-                            Amount = 220m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 43,
-                            AccountNumber = 6,
-                            Amount = 283m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 44,
-                            AccountNumber = 6,
-                            Amount = 729m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 45,
-                            AccountNumber = 7,
-                            Amount = 193m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 46,
-                            AccountNumber = 7,
-                            Amount = 371m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 47,
-                            AccountNumber = 7,
-                            Amount = 43m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 48,
-                            AccountNumber = 7,
-                            Amount = 854m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 49,
-                            AccountNumber = 7,
-                            Amount = 523m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 50,
-                            AccountNumber = 7,
-                            Amount = 774m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 51,
-                            AccountNumber = 7,
-                            Amount = 632m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 52,
-                            AccountNumber = 7,
-                            Amount = 594m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 53,
-                            AccountNumber = 7,
-                            Amount = 562m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 54,
-                            AccountNumber = 7,
-                            Amount = 790m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 55,
-                            AccountNumber = 7,
-                            Amount = 547m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 56,
-                            AccountNumber = 7,
-                            Amount = 576m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 57,
-                            AccountNumber = 8,
-                            Amount = 968m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 58,
-                            AccountNumber = 8,
-                            Amount = 737m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 59,
-                            AccountNumber = 8,
-                            Amount = 223m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 60,
-                            AccountNumber = 8,
-                            Amount = 301m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 61,
-                            AccountNumber = 8,
-                            Amount = 430m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 62,
-                            AccountNumber = 9,
-                            Amount = 415m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 63,
-                            AccountNumber = 10,
-                            Amount = 414m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 64,
-                            AccountNumber = 10,
-                            Amount = 585m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 65,
-                            AccountNumber = 10,
-                            Amount = 343m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 66,
-                            AccountNumber = 10,
-                            Amount = 949m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 67,
-                            AccountNumber = 10,
+                            AccountNumber = 4,
                             Amount = 802m,
                             Type = "Deposit"
                         },
                         new
                         {
-                            TransactionId = 68,
-                            AccountNumber = 11,
-                            Amount = 620m,
+                            TransactionId = 31,
+                            AccountNumber = 4,
+                            Amount = 117m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 32,
+                            AccountNumber = 4,
+                            Amount = 331m,
                             Type = "Withdraw"
                         },
                         new
                         {
-                            TransactionId = 69,
-                            AccountNumber = 11,
+                            TransactionId = 33,
+                            AccountNumber = 4,
+                            Amount = 102m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 34,
+                            AccountNumber = 4,
+                            Amount = 25m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 35,
+                            AccountNumber = 4,
                             Amount = 501m,
                             Type = "Deposit"
                         },
                         new
                         {
-                            TransactionId = 70,
-                            AccountNumber = 11,
-                            Amount = 400m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 71,
-                            AccountNumber = 11,
-                            Amount = 724m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 72,
-                            AccountNumber = 11,
-                            Amount = 866m,
+                            TransactionId = 36,
+                            AccountNumber = 4,
+                            Amount = 270m,
                             Type = "Withdraw"
                         },
                         new
                         {
-                            TransactionId = 73,
-                            AccountNumber = 12,
-                            Amount = 665m,
+                            TransactionId = 37,
+                            AccountNumber = 4,
+                            Amount = 846m,
                             Type = "Deposit"
                         },
                         new
                         {
-                            TransactionId = 74,
-                            AccountNumber = 12,
-                            Amount = 388m,
+                            TransactionId = 38,
+                            AccountNumber = 4,
+                            Amount = 514m,
                             Type = "Withdraw"
                         },
                         new
                         {
-                            TransactionId = 75,
-                            AccountNumber = 12,
-                            Amount = 782m,
+                            TransactionId = 39,
+                            AccountNumber = 4,
+                            Amount = 65m,
                             Type = "Deposit"
                         },
                         new
                         {
-                            TransactionId = 76,
-                            AccountNumber = 12,
-                            Amount = 432m,
+                            TransactionId = 40,
+                            AccountNumber = 5,
+                            Amount = 272m,
                             Type = "Deposit"
                         },
                         new
                         {
-                            TransactionId = 77,
-                            AccountNumber = 12,
-                            Amount = 927m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 78,
-                            AccountNumber = 12,
-                            Amount = 951m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 79,
-                            AccountNumber = 12,
-                            Amount = 582m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 80,
-                            AccountNumber = 12,
-                            Amount = 97m,
+                            TransactionId = 41,
+                            AccountNumber = 5,
+                            Amount = 607m,
                             Type = "Deposit"
                         },
                         new
                         {
-                            TransactionId = 81,
-                            AccountNumber = 12,
-                            Amount = 537m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 82,
-                            AccountNumber = 13,
-                            Amount = 487m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 83,
-                            AccountNumber = 13,
-                            Amount = 734m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 84,
-                            AccountNumber = 13,
-                            Amount = 32m,
+                            TransactionId = 42,
+                            AccountNumber = 5,
+                            Amount = 496m,
                             Type = "Withdraw"
                         },
                         new
                         {
-                            TransactionId = 85,
-                            AccountNumber = 13,
-                            Amount = 301m,
+                            TransactionId = 43,
+                            AccountNumber = 5,
+                            Amount = 60m,
                             Type = "Deposit"
                         },
                         new
                         {
-                            TransactionId = 86,
-                            AccountNumber = 13,
-                            Amount = 334m,
+                            TransactionId = 44,
+                            AccountNumber = 5,
+                            Amount = 196m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 45,
+                            AccountNumber = 5,
+                            Amount = 746m,
                             Type = "Deposit"
                         },
                         new
                         {
-                            TransactionId = 87,
-                            AccountNumber = 13,
-                            Amount = 416m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 88,
-                            AccountNumber = 13,
-                            Amount = 597m,
+                            TransactionId = 46,
+                            AccountNumber = 5,
+                            Amount = 73m,
                             Type = "Deposit"
                         },
                         new
                         {
-                            TransactionId = 89,
-                            AccountNumber = 13,
-                            Amount = 128m,
+                            TransactionId = 47,
+                            AccountNumber = 5,
+                            Amount = 753m,
                             Type = "Deposit"
                         },
                         new
                         {
-                            TransactionId = 90,
-                            AccountNumber = 14,
-                            Amount = 181m,
+                            TransactionId = 48,
+                            AccountNumber = 5,
+                            Amount = 471m,
                             Type = "Deposit"
                         },
                         new
                         {
-                            TransactionId = 91,
-                            AccountNumber = 14,
-                            Amount = 203m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 92,
-                            AccountNumber = 14,
-                            Amount = 755m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 93,
-                            AccountNumber = 14,
-                            Amount = 489m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 94,
-                            AccountNumber = 14,
-                            Amount = 210m,
+                            TransactionId = 49,
+                            AccountNumber = 5,
+                            Amount = 933m,
                             Type = "Deposit"
                         },
                         new
                         {
-                            TransactionId = 95,
-                            AccountNumber = 14,
-                            Amount = 411m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 96,
-                            AccountNumber = 14,
-                            Amount = 663m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 97,
-                            AccountNumber = 14,
-                            Amount = 959m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 98,
-                            AccountNumber = 14,
-                            Amount = 877m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 99,
-                            AccountNumber = 14,
-                            Amount = 646m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 100,
-                            AccountNumber = 15,
-                            Amount = 662m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 101,
-                            AccountNumber = 15,
-                            Amount = 678m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 102,
-                            AccountNumber = 16,
-                            Amount = 922m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 103,
-                            AccountNumber = 17,
+                            TransactionId = 50,
+                            AccountNumber = 5,
                             Amount = 543m,
                             Type = "Withdraw"
                         },
                         new
                         {
-                            TransactionId = 104,
-                            AccountNumber = 18,
-                            Amount = 338m,
+                            TransactionId = 51,
+                            AccountNumber = 5,
+                            Amount = 958m,
                             Type = "Withdraw"
                         },
                         new
                         {
+                            TransactionId = 52,
+                            AccountNumber = 5,
+                            Amount = 106m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 53,
+                            AccountNumber = 6,
+                            Amount = 752m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 54,
+                            AccountNumber = 6,
+                            Amount = 173m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 55,
+                            AccountNumber = 6,
+                            Amount = 931m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 56,
+                            AccountNumber = 6,
+                            Amount = 557m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 57,
+                            AccountNumber = 6,
+                            Amount = 824m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 58,
+                            AccountNumber = 6,
+                            Amount = 67m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 59,
+                            AccountNumber = 6,
+                            Amount = 595m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 60,
+                            AccountNumber = 6,
+                            Amount = 642m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 61,
+                            AccountNumber = 7,
+                            Amount = 419m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 62,
+                            AccountNumber = 7,
+                            Amount = 516m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 63,
+                            AccountNumber = 7,
+                            Amount = 256m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 64,
+                            AccountNumber = 7,
+                            Amount = 409m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 65,
+                            AccountNumber = 7,
+                            Amount = 912m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 66,
+                            AccountNumber = 7,
+                            Amount = 531m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 67,
+                            AccountNumber = 8,
+                            Amount = 569m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 68,
+                            AccountNumber = 8,
+                            Amount = 587m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 69,
+                            AccountNumber = 8,
+                            Amount = 232m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 70,
+                            AccountNumber = 8,
+                            Amount = 622m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 71,
+                            AccountNumber = 8,
+                            Amount = 673m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 72,
+                            AccountNumber = 8,
+                            Amount = 151m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 73,
+                            AccountNumber = 8,
+                            Amount = 35m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 74,
+                            AccountNumber = 8,
+                            Amount = 475m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 75,
+                            AccountNumber = 8,
+                            Amount = 171m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 76,
+                            AccountNumber = 8,
+                            Amount = 886m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 77,
+                            AccountNumber = 8,
+                            Amount = 564m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 78,
+                            AccountNumber = 9,
+                            Amount = 86m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 79,
+                            AccountNumber = 9,
+                            Amount = 855m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 80,
+                            AccountNumber = 9,
+                            Amount = 573m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 81,
+                            AccountNumber = 9,
+                            Amount = 374m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 82,
+                            AccountNumber = 9,
+                            Amount = 547m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 83,
+                            AccountNumber = 9,
+                            Amount = 157m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 84,
+                            AccountNumber = 9,
+                            Amount = 889m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 85,
+                            AccountNumber = 9,
+                            Amount = 927m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 86,
+                            AccountNumber = 9,
+                            Amount = 661m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 87,
+                            AccountNumber = 10,
+                            Amount = 287m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 88,
+                            AccountNumber = 10,
+                            Amount = 693m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 89,
+                            AccountNumber = 10,
+                            Amount = 584m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 90,
+                            AccountNumber = 10,
+                            Amount = 987m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 91,
+                            AccountNumber = 10,
+                            Amount = 740m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 92,
+                            AccountNumber = 10,
+                            Amount = 67m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 93,
+                            AccountNumber = 10,
+                            Amount = 392m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 94,
+                            AccountNumber = 10,
+                            Amount = 889m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 95,
+                            AccountNumber = 11,
+                            Amount = 978m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 96,
+                            AccountNumber = 11,
+                            Amount = 396m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 97,
+                            AccountNumber = 11,
+                            Amount = 527m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 98,
+                            AccountNumber = 11,
+                            Amount = 862m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 99,
+                            AccountNumber = 11,
+                            Amount = 390m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 100,
+                            AccountNumber = 11,
+                            Amount = 360m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 101,
+                            AccountNumber = 11,
+                            Amount = 816m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 102,
+                            AccountNumber = 11,
+                            Amount = 52m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 103,
+                            AccountNumber = 12,
+                            Amount = 253m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 104,
+                            AccountNumber = 12,
+                            Amount = 232m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
                             TransactionId = 105,
-                            AccountNumber = 19,
-                            Amount = 844m,
+                            AccountNumber = 12,
+                            Amount = 978m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 106,
-                            AccountNumber = 19,
-                            Amount = 487m,
+                            AccountNumber = 12,
+                            Amount = 573m,
                             Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 107,
-                            AccountNumber = 19,
-                            Amount = 281m,
+                            AccountNumber = 12,
+                            Amount = 384m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 108,
-                            AccountNumber = 20,
-                            Amount = 600m,
+                            AccountNumber = 12,
+                            Amount = 287m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 109,
-                            AccountNumber = 20,
-                            Amount = 346m,
-                            Type = "Withdraw"
-                        },
-                        new
-                        {
-                            TransactionId = 110,
-                            AccountNumber = 20,
-                            Amount = 991m,
+                            AccountNumber = 12,
+                            Amount = 968m,
                             Type = "Deposit"
                         },
                         new
                         {
-                            TransactionId = 111,
-                            AccountNumber = 20,
-                            Amount = 910m,
+                            TransactionId = 110,
+                            AccountNumber = 12,
+                            Amount = 468m,
                             Type = "Withdraw"
                         },
                         new
                         {
+                            TransactionId = 111,
+                            AccountNumber = 12,
+                            Amount = 909m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
                             TransactionId = 112,
-                            AccountNumber = 20,
-                            Amount = 639m,
+                            AccountNumber = 12,
+                            Amount = 288m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 113,
-                            AccountNumber = 20,
-                            Amount = 843m,
-                            Type = "Deposit"
+                            AccountNumber = 12,
+                            Amount = 119m,
+                            Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 114,
-                            AccountNumber = 20,
-                            Amount = 958m,
+                            AccountNumber = 12,
+                            Amount = 745m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 115,
-                            AccountNumber = 20,
-                            Amount = 752m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 116,
-                            AccountNumber = 20,
-                            Amount = 747m,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionId = 117,
-                            AccountNumber = 21,
-                            Amount = 175m,
+                            AccountNumber = 12,
+                            Amount = 281m,
                             Type = "Withdraw"
                         },
                         new
                         {
+                            TransactionId = 116,
+                            AccountNumber = 13,
+                            Amount = 222m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 117,
+                            AccountNumber = 13,
+                            Amount = 491m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
                             TransactionId = 118,
-                            AccountNumber = 21,
-                            Amount = 357m,
+                            AccountNumber = 13,
+                            Amount = 273m,
                             Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 119,
-                            AccountNumber = 21,
-                            Amount = 568m,
+                            AccountNumber = 13,
+                            Amount = 794m,
                             Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 120,
-                            AccountNumber = 22,
-                            Amount = 243m,
-                            Type = "Deposit"
+                            AccountNumber = 13,
+                            Amount = 870m,
+                            Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 121,
-                            AccountNumber = 22,
-                            Amount = 989m,
+                            AccountNumber = 14,
+                            Amount = 677m,
                             Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 122,
-                            AccountNumber = 23,
-                            Amount = 10m,
-                            Type = "Withdraw"
+                            AccountNumber = 14,
+                            Amount = 869m,
+                            Type = "Deposit"
                         },
                         new
                         {
                             TransactionId = 123,
-                            AccountNumber = 23,
-                            Amount = 760m,
+                            AccountNumber = 14,
+                            Amount = 367m,
                             Type = "Withdraw"
                         },
                         new
                         {
                             TransactionId = 124,
-                            AccountNumber = 23,
-                            Amount = 777m,
+                            AccountNumber = 14,
+                            Amount = 396m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 125,
+                            AccountNumber = 14,
+                            Amount = 549m,
                             Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 126,
+                            AccountNumber = 14,
+                            Amount = 768m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 127,
+                            AccountNumber = 14,
+                            Amount = 787m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 128,
+                            AccountNumber = 14,
+                            Amount = 950m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 129,
+                            AccountNumber = 14,
+                            Amount = 158m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 130,
+                            AccountNumber = 14,
+                            Amount = 876m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 131,
+                            AccountNumber = 14,
+                            Amount = 968m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 132,
+                            AccountNumber = 14,
+                            Amount = 233m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 133,
+                            AccountNumber = 15,
+                            Amount = 188m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 134,
+                            AccountNumber = 15,
+                            Amount = 244m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 135,
+                            AccountNumber = 15,
+                            Amount = 345m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 136,
+                            AccountNumber = 15,
+                            Amount = 839m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 137,
+                            AccountNumber = 15,
+                            Amount = 689m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 138,
+                            AccountNumber = 16,
+                            Amount = 523m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 139,
+                            AccountNumber = 16,
+                            Amount = 976m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 140,
+                            AccountNumber = 16,
+                            Amount = 127m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 141,
+                            AccountNumber = 16,
+                            Amount = 462m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 142,
+                            AccountNumber = 16,
+                            Amount = 112m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 143,
+                            AccountNumber = 16,
+                            Amount = 988m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 144,
+                            AccountNumber = 16,
+                            Amount = 317m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 145,
+                            AccountNumber = 16,
+                            Amount = 985m,
+                            Type = "Withdraw"
+                        },
+                        new
+                        {
+                            TransactionId = 146,
+                            AccountNumber = 16,
+                            Amount = 349m,
+                            Type = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionId = 147,
+                            AccountNumber = 16,
+                            Amount = 634m,
+                            Type = "Deposit"
                         });
                 });
 
@@ -1169,66 +1274,66 @@ namespace BankWebService.Migrations
                     b.HasData(
                         new
                         {
-                            Username = "jessicacampbell185",
-                            Address = "164 Campbell Street, City 5",
-                            Email = "jessica_campbell@email.com",
-                            Password = "pass8105",
-                            Phone = "0451200149",
-                            Picture = "C:\\Users\\jjse5\\Source\\Repos\\DC_Assignment_2\\resources\\ProfilePictures\\5.jpg"
+                            Username = "elizabethrivera552",
+                            Address = "78 Rivera Street, City 9",
+                            Email = "elizabeth_rivera@email.com",
+                            Password = "pass5330",
+                            Phone = "0436463503",
+                            Picture = "C:\\Sean\\Sean\\Curtin\\2025 Sem 2\\DC\\Assignment 2\\DC_Assignment_2\\resources\\ProfilePictures\\3.jpg"
                         },
                         new
                         {
-                            Username = "jamesdiaz996",
-                            Address = "175 Diaz Street, City 1",
-                            Email = "james_diaz@email.com",
-                            Password = "pass9547",
-                            Phone = "0499003707",
-                            Picture = "C:\\Users\\jjse5\\Source\\Repos\\DC_Assignment_2\\resources\\ProfilePictures\\3.jpg"
+                            Username = "elizabethedwards766",
+                            Address = "150 Edwards Street, City 1",
+                            Email = "elizabeth_edwards@email.com",
+                            Password = "pass6785",
+                            Phone = "0446077880",
+                            Picture = "C:\\Sean\\Sean\\Curtin\\2025 Sem 2\\DC\\Assignment 2\\DC_Assignment_2\\resources\\ProfilePictures\\3.jpg"
                         },
                         new
                         {
-                            Username = "sarahdiaz655",
-                            Address = "110 Diaz Street, City 5",
-                            Email = "sarah_diaz@email.com",
-                            Password = "pass1125",
-                            Phone = "0460620077",
-                            Picture = "C:\\Users\\jjse5\\Source\\Repos\\DC_Assignment_2\\resources\\ProfilePictures\\3.jpg"
+                            Username = "jennifercruz522",
+                            Address = "113 Cruz Street, City 8",
+                            Email = "jennifer_cruz@email.com",
+                            Password = "pass2375",
+                            Phone = "0491244836",
+                            Picture = "C:\\Sean\\Sean\\Curtin\\2025 Sem 2\\DC\\Assignment 2\\DC_Assignment_2\\resources\\ProfilePictures\\4.jpg"
                         },
                         new
                         {
-                            Username = "jenniferroberts143",
-                            Address = "90 Roberts Street, City 7",
-                            Email = "jennifer_roberts@email.com",
-                            Password = "pass8280",
-                            Phone = "0487387878",
-                            Picture = "C:\\Users\\jjse5\\Source\\Repos\\DC_Assignment_2\\resources\\ProfilePictures\\1.jpg"
+                            Username = "michaelreyes839",
+                            Address = "9 Reyes Street, City 2",
+                            Email = "michael_reyes@email.com",
+                            Password = "pass8454",
+                            Phone = "0457564300",
+                            Picture = "C:\\Sean\\Sean\\Curtin\\2025 Sem 2\\DC\\Assignment 2\\DC_Assignment_2\\resources\\ProfilePictures\\2.jpg"
                         },
                         new
                         {
-                            Username = "richardhall302",
-                            Address = "28 Hall Street, City 6",
-                            Email = "richard_hall@email.com",
-                            Password = "pass5181",
-                            Phone = "0461924169",
-                            Picture = "C:\\Users\\jjse5\\Source\\Repos\\DC_Assignment_2\\resources\\ProfilePictures\\1.jpg"
+                            Username = "jessicaparker180",
+                            Address = "82 Parker Street, City 9",
+                            Email = "jessica_parker@email.com",
+                            Password = "pass8826",
+                            Phone = "0457038127",
+                            Picture = "C:\\Sean\\Sean\\Curtin\\2025 Sem 2\\DC\\Assignment 2\\DC_Assignment_2\\resources\\ProfilePictures\\2.jpg"
                         },
                         new
                         {
-                            Username = "maryhall268",
-                            Address = "86 Hall Street, City 9",
-                            Email = "mary_hall@email.com",
-                            Password = "pass8613",
-                            Phone = "0453451071",
-                            Picture = "C:\\Users\\jjse5\\Source\\Repos\\DC_Assignment_2\\resources\\ProfilePictures\\2.jpg"
+                            Username = "richarddiaz386",
+                            Address = "124 Diaz Street, City 9",
+                            Email = "richard_diaz@email.com",
+                            Password = "pass3434",
+                            Phone = "0426641971",
+                            Picture = "C:\\Sean\\Sean\\Curtin\\2025 Sem 2\\DC\\Assignment 2\\DC_Assignment_2\\resources\\ProfilePictures\\4.jpg"
                         },
                         new
                         {
-                            Username = "barbaraparker204",
-                            Address = "10 Parker Street, City 9",
-                            Email = "barbara_parker@email.com",
-                            Password = "pass5559",
-                            Phone = "0460433857",
-                            Picture = "C:\\Users\\jjse5\\Source\\Repos\\DC_Assignment_2\\resources\\ProfilePictures\\4.jpg"
+                            Username = "patriciacruz655",
+                            Address = "110 Cruz Street, City 6",
+                            Email = "patricia_cruz@email.com",
+                            Password = "pass3965",
+                            Phone = "0435489511",
+                            Picture = "C:\\Sean\\Sean\\Curtin\\2025 Sem 2\\DC\\Assignment 2\\DC_Assignment_2\\resources\\ProfilePictures\\3.jpg"
                         },
                         new
                         {
@@ -1246,7 +1351,7 @@ namespace BankWebService.Migrations
                             Email = "MoeDegrasse@email.com",
                             Password = "pass12",
                             Phone = "0444122322",
-                            Picture = "C:\\Users\\jjse5\\Source\\Repos\\DC_Assignment_2\\resources\\ProfilePictures\\1.jpg"
+                            Picture = "C:\\Sean\\Sean\\Curtin\\2025 Sem 2\\DC\\Assignment 2\\DC_Assignment_2\\resources\\ProfilePictures\\1.jpg"
                         });
                 });
 

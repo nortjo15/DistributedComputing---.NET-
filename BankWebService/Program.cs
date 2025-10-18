@@ -24,10 +24,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-}
 
 app.UseStaticFiles();
 
@@ -37,8 +33,5 @@ app.UseAuthorization();
 
 // Enable both MVC and API routing
 app.MapControllers();
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

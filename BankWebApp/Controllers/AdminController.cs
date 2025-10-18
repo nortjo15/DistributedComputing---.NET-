@@ -15,7 +15,7 @@ namespace BankWebApp.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> GetView()
         {
             var client = _clientFactory.CreateClient("BankApi");
 
@@ -46,7 +46,7 @@ namespace BankWebApp.Controllers
                     : new List<AccountDto>()
             };
 
-            return View(model);
+            return PartialView(model);
         }
     }
 }

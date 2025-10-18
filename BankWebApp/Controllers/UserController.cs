@@ -16,9 +16,7 @@ namespace BankWebApp.Controllers
             _clientFactory = clientFactory;
             _logger = logger;
         }
-
-
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> GetView()
         {
             var client = _clientFactory.CreateClient("BankApi");
 
@@ -41,17 +39,17 @@ namespace BankWebApp.Controllers
                     Transactions = transactionsTask.Result
                 };
 
-                return View(model);
+                return PartialView(model);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "API fetch failed");
-                return View(new UserDashboardViewModel());
+                return PartialView(new UserDashboardViewModel());
             }
         }
 
-        public IActionResult Transfer() => View();
-        public IActionResult Security() => View();
+        public IActionResult Transfer() => PartialView();
+        public IActionResult Security() => PartialView();
 
     }
 
