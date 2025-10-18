@@ -1,4 +1,5 @@
 ﻿using BankWebService.Data;
+using BankWebService.DTOs;
 using BankWebService.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,144 +8,101 @@ namespace BankWebService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TransactionController : Controller
+    public class TransactionController : ControllerBase
     {
         private readonly DBManager _context;
+        public TransactionController(DBManager context) => _context = context;
 
-        public TransactionController(DBManager context)
-        {
-            _context = context;
-        }
-
-        // POST: api/Transaction/withdraw/{accountNumber}/{amount}
         [HttpPost("withdraw/{accountNumber}/{amount}")]
-        public async Task<ActionResult<Transaction>> Withdraw(int accountNumber, double amount)
+        public async Task<ActionResult<TransactionDto>> Withdraw(int accountNumber, decimal amount)
         {
-            if (_context.Accounts == null)
-            {
-                return Problem("Entity set 'DBManager.Accounts' is null");
-            }
-
-            if (_context.Transactions == null)
-            {
-                return Problem("Entity set 'DBManager.Transactions' is null");
-            }
-
-            // Validate amount
-            if (amount <= 0)
-            {
-                return BadRequest("Amount must be greater than zero");
-            }
-
-            // Get the account
             var account = await _context.Accounts.FindAsync(accountNumber);
-            if (account == null)
-            {
-                return NotFound($"Account {accountNumber} not found");
-            }
+            if (account == null) return NotFound();
 
-            // Check sufficient balance
-            if (account.Balance < (decimal)amount)
-            {
-                return BadRequest("Insufficient funds");
-            }
+            if (amount <= 0) return BadRequest("Amount must be greater than zero");
+            if (account.Balance < amount) return BadRequest("Insufficient funds");
 
-            // Update account balance
-            account.Balance -= (decimal)amount;
+            account.Balance -= amount;
             _context.Entry(account).State = EntityState.Modified;
 
-            // Create a new transaction
-            Transaction transaction = new Transaction
+            var tx = new Transaction
             {
                 Type = Transaction.TxType.Withdraw,
                 AccountNumber = accountNumber,
-                Amount = (decimal)amount,
+                Amount = amount,
                 Account = account
             };
-
-            _context.Transactions.Add(transaction);
+            _context.Transactions.Add(tx);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetTransaction), new { id = transaction.TransactionId }, transaction);
+            return Ok(new TransactionDto
+            {
+                TransactionId = tx.TransactionId,
+                AccountNumber = tx.AccountNumber,
+                Type = tx.Type.ToString(),
+                Amount = tx.Amount
+            });
         }
 
-        // POST: api/Transaction/deposit/{accountNumber}/{amount}
         [HttpPost("deposit/{accountNumber}/{amount}")]
-        public async Task<ActionResult<Transaction>> Deposit(int accountNumber, double amount)
+        public async Task<ActionResult<TransactionDto>> Deposit(int accountNumber, decimal amount)
         {
-            if (_context.Accounts == null)
-            {
-                return Problem("Entity set 'DBManager.Accounts' is null");
-            }
-
-            if (_context.Transactions == null)
-            {
-                return Problem("Entity set 'DBManager.Transactions' is null");
-            }
-
-            // Validate amount
-            if (amount <= 0)
-            {
-                return BadRequest("Amount must be greater than zero");
-            }
-
-            // Get the account
             var account = await _context.Accounts.FindAsync(accountNumber);
-            if (account == null)
-            {
-                return NotFound($"Account {accountNumber} not found");
-            }
+            if (account == null) return NotFound();
+            if (amount <= 0) return BadRequest("Amount must be greater than zero");
 
-            // Update account balance
-            account.Balance += (decimal)amount;
+            account.Balance += amount;
             _context.Entry(account).State = EntityState.Modified;
 
-            // Create a new transaction
-            Transaction transaction = new Transaction
+            var tx = new Transaction
             {
                 Type = Transaction.TxType.Deposit,
                 AccountNumber = accountNumber,
-                Amount = (decimal)amount,
+                Amount = amount,
                 Account = account
             };
-
-            _context.Transactions.Add(transaction);
+            _context.Transactions.Add(tx);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetTransaction), new { id = transaction.TransactionId }, transaction);
+            return Ok(new TransactionDto
+            {
+                TransactionId = tx.TransactionId,
+                AccountNumber = tx.AccountNumber,
+                Type = tx.Type.ToString(),
+                Amount = tx.Amount
+            });
         }
 
-        // GET: api/Transaction/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Transaction>> GetTransaction(int id)
+        public async Task<ActionResult<TransactionDto>> GetTransaction(int id)
         {
-            if (_context.Transactions == null)
+            var t = await _context.Transactions.FindAsync(id);
+            if (t == null) return NotFound();
+
+            return new TransactionDto
             {
-                return NotFound();
-            }
-
-            var transaction = await _context.Transactions.FindAsync(id);
-
-            if (transaction == null)
-            {
-                return NotFound();
-            }
-
-            return transaction;
+                TransactionId = t.TransactionId,
+                AccountNumber = t.AccountNumber,
+                Type = t.Type.ToString(),
+                Amount = t.Amount
+            };
         }
 
-        // GET: api/Transaction/all
         [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<Transaction>>> GetAll()
+        public async Task<ActionResult<IEnumerable<TransactionDto>>> GetAll()
         {
-            if (_context.Transactions == null)
-            {
-                return NotFound();
-            }
+            var list = await _context.Transactions
+                .Select(t => new TransactionDto
+                {
+                    TransactionId = t.TransactionId,
+                    AccountNumber = t.AccountNumber,
+                    Type = t.Type.ToString(),
+                    Amount = t.Amount
+                })
+                .AsNoTracking()
+                .ToListAsync();
 
-            return await _context.Transactions
-                                 .AsNoTracking()
-                                 .ToListAsync();
+            return list;
         }
     }
 }

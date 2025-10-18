@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
-
 namespace BankWebApp.Controllers
 {
     public class UserController : Controller
@@ -19,24 +18,26 @@ namespace BankWebApp.Controllers
         public async Task<IActionResult> GetView()
         {
             var client = _clientFactory.CreateClient("BankApi");
-
-            // Placeholder token until authentication implemented
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", "dummy-token");
 
-
             try
             {
-                var profileTask = client.GetFromJsonAsync<UserProfileDto>("api/UserProfile/by-username/barbaraparker204");
-                var accountsTask = client.GetFromJsonAsync<List<AccountDto>>("api/account/all");
-                var transactionsTask = client.GetFromJsonAsync<List<TransactionDto>>("api/transaction/all");
-                await Task.WhenAll(profileTask!, accountsTask!, transactionsTask!);
+                // Replace with actual logged-in username later
+                var username = "sarahdiaz655";
+
+                var profileTask = client.GetFromJsonAsync<UserProfileDto>($"api/UserProfile/by-username/{username}");
+                var accountsTask = client.GetFromJsonAsync<List<AccountDto>>("api/Account/all");
+                var transactionsTask = client.GetFromJsonAsync<List<TransactionDto>>("api/Transaction/all");
+                var profilesTask = client.GetFromJsonAsync<List<UserProfileDto>>("api/UserProfile/all");
+                await Task.WhenAll(profileTask!, accountsTask!, transactionsTask!, profilesTask!);
 
                 var model = new UserDashboardViewModel
                 {
                     Profile = profileTask.Result,
                     Accounts = accountsTask.Result,
-                    Transactions = transactionsTask.Result
+                    Transactions = transactionsTask.Result,
+                    Profiles = profilesTask.Result
                 };
 
                 return PartialView(model);
@@ -48,9 +49,46 @@ namespace BankWebApp.Controllers
             }
         }
 
-        public IActionResult Transfer() => PartialView();
-        public IActionResult Security() => PartialView();
+        [HttpPost]
+        public async Task<IActionResult> Transfer(int FromAccountId, int ToAccountId, decimal Amount)
+        {
+            var client = _clientFactory.CreateClient("BankApi");
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", "dummy-token");
 
+            try
+            {
+                _logger.LogInformation($"Withdraw {FromAccountId}, Deposit {ToAccountId}, Amount {Amount}");
+
+                var withdrawResponse = await client.PostAsync(
+                    $"api/Transaction/withdraw/{FromAccountId}/{Amount}", null);
+                _logger.LogInformation($"Withdraw status: {withdrawResponse.StatusCode}");
+
+                var withdrawContent = await withdrawResponse.Content.ReadAsStringAsync();
+                _logger.LogInformation($"Withdraw response: {withdrawContent}");
+
+                withdrawResponse.EnsureSuccessStatusCode();
+
+                var depositResponse = await client.PostAsync(
+                    $"api/Transaction/deposit/{ToAccountId}/{Amount}", null);
+                _logger.LogInformation($"Deposit status: {depositResponse.StatusCode}");
+
+                var depositContent = await depositResponse.Content.ReadAsStringAsync();
+                _logger.LogInformation($"Deposit response: {depositContent}");
+
+                depositResponse.EnsureSuccessStatusCode();
+
+                TempData["Message"] = "Transfer completed successfully.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Transfer failed");
+                TempData["Message"] = $"Transfer failed: {ex.Message}";
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Security() => View();
     }
-
 }

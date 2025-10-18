@@ -1,4 +1,5 @@
 ﻿using BankWebService.Data;
+using BankWebService.DTOs;
 using BankWebService.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,115 +11,79 @@ namespace BankWebService.Controllers
     public class AccountController : ControllerBase
     {
         private readonly DBManager _context;
+        public AccountController(DBManager context) => _context = context;
 
-        public AccountController(DBManager context)
-        {
-            _context = context;
-        }
-
-        // Create Account // TODO
-        // Post: api/account/create_account
         [HttpPost("create_account")]
-        public async Task<ActionResult<Account>> CreateAccount(Account account)
+        public async Task<ActionResult<AccountDto>> CreateAccount(Account account)
         {
-            if(_context.Accounts == null)
-            {
-                return Problem("Entity set 'DBManager.Accounts'  is null.");
-            }
             _context.Accounts.Add(account);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetAccount", new { accountNumber = account.AccountNumber }, account );
+
+            var dto = new AccountDto
+            {
+                AccountNumber = account.AccountNumber,
+                Name = account.Name,
+                Balance = account.Balance,
+                Username = account.Username,
+                Email = account.Email
+            };
+
+            return CreatedAtAction(nameof(GetAccount), new { accountNumber = account.AccountNumber }, dto);
         }
 
-        // Get Account by Account Number
-        // GET: api/account/{accountNumber}
         [HttpGet("{accountNumber}")]
-        public async Task<ActionResult<Account>> GetAccount(int accountNumber)
+        public async Task<ActionResult<AccountDto>> GetAccount(int accountNumber)
         {
-            if(_context.Accounts == null)
-            {
-                return NotFound();
-            }
+            var a = await _context.Accounts.FindAsync(accountNumber);
+            if (a == null) return NotFound();
 
-            var account = await _context.Accounts.FindAsync(accountNumber);
-            if(account == null)
+            return new AccountDto
             {
-                return NotFound();
-            }
-
-            return account;
+                AccountNumber = a.AccountNumber,
+                Name = a.Name,
+                Balance = a.Balance,
+                Username = a.Username,
+                Email = a.Email
+            };
         }
 
-        // Update Account
-        // PUT: api/account/{accountNumber}
         [HttpPut("{accountNumber}")]
         public async Task<IActionResult> UpdateAccount(int accountNumber, Account account)
         {
-            if(accountNumber != account.AccountNumber)
-            {
-                return BadRequest();
-            }
+            if (accountNumber != account.AccountNumber) return BadRequest();
 
             _context.Entry(account).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if(!AccountExists(accountNumber))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
-        // Delete Account
-        // DELETE: api/account/{accountNumber}
         [HttpDelete("{accountNumber}")]
         public async Task<IActionResult> DeleteAccount(int accountNumber)
         {
-            if(_context.Accounts == null)
-            {
-                return NotFound();
-            }
-
             var account = await _context.Accounts.FindAsync(accountNumber);
-            if(account == null)
-            {
-                return NotFound();
-            }
+            if (account == null) return NotFound();
 
             _context.Accounts.Remove(account);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 
-        // GET: api/account/all
         [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<Account>>> GetAll()
+        public async Task<ActionResult<IEnumerable<AccountDto>>> GetAll()
         {
-            if (_context.Accounts == null)
-            {
-                return NotFound();
-            }
+            var list = await _context.Accounts
+                .Select(a => new AccountDto
+                {
+                    AccountNumber = a.AccountNumber,
+                    Name = a.Name,
+                    Balance = a.Balance,
+                    Username = a.Username,
+                    Email = a.Email
+                })
+                .AsNoTracking()
+                .ToListAsync();
 
-            return await _context.Accounts
-                                 .AsNoTracking()
-                                 .ToListAsync();
-        }
-
-        private bool AccountExists(int id)
-        {
-            return (_context.Accounts?.Any(e => e.AccountNumber == id)).GetValueOrDefault();
+            return list;
         }
     }
 }

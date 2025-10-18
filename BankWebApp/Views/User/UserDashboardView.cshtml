@@ -4,6 +4,13 @@
 }
 
 <div class="container mt-4">
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
     <h2 class="mb-4 text-center">Welcome, @Model.Profile?.Username</h2>
 
     <div class="row">
@@ -32,7 +39,6 @@
                     <table class="table table-striped table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Account #</th>
                                 <th>Name</th>
                                 <th>Balance</th>
                             </tr>
@@ -41,7 +47,6 @@
                             @foreach (var a in Model.Accounts?.Where(x => x.Username == Model.Profile?.Username) ?? new List<BankWebApp.Models.AccountDto>())
                             {
                                 <tr>
-                                    <td>@a.AccountNumber</td>
                                     <td>@a.Name</td>
                                     <td>@a.Balance.ToString("C")</td>
                                 </tr>
@@ -64,7 +69,7 @@
                     <tr>
                         <th>Type</th>
                         <th>Amount</th>
-                        <th>Account #</th>
+                        <th>Account Name</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -111,7 +116,7 @@
                             <option value="">Select Account</option>
                             @foreach (var a in Model.Accounts?.Where(x => x.Username == Model.Profile?.Username) ?? new List<BankWebApp.Models.AccountDto>())
                             {
-                                <option value="@a.AccountNumber">@a.Name (@a.AccountNumber)</option>
+                                <option value="@a.AccountNumber">@a.Name</option>
                             }
                         </select>
                     </div>
@@ -120,11 +125,11 @@
                         <label class="form-label">Recipient User</label>
                         <select id="toUser" class="form-select" required>
                             <option value="">Select User</option>
-                            @foreach (var u in Model.Accounts?.Select(a => a.Username).Distinct() ?? new List<string>())
+                            @foreach (var p in Model.Profiles ?? new List<BankWebApp.Models.UserProfileDto>())
                             {
-                                if (u != Model.Profile?.Username)
+                                if(!p.Username.ToLower().Contains("admin"))
                                 {
-                                    <option value="@u">@u</option>
+                                    <option value="@p.Username">@p.Username</option>
                                 }
                             }
                         </select>
@@ -174,7 +179,7 @@
                 accounts.forEach(a => {
                     const opt = document.createElement('option');
                     opt.value = a.accountNumber || a.AccountNumber;
-                    opt.textContent = `${a.name || a.Name} (${a.accountNumber || a.AccountNumber})`;
+                    opt.textContent = `${a.name || a.Name}`;
                     toAccountSelect.appendChild(opt);
                 });
                 toAccountSelect.disabled = accounts.length === 0;
