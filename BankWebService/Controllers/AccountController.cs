@@ -19,12 +19,24 @@ namespace BankWebService.Controllers
         // Create Account // TODO
         // Post: api/account/create_account
         [HttpPost("create_account")]
-        public async Task<ActionResult<Account>> CreateAccount(Account account)
+        public async Task<ActionResult<Account>> CreateAccount([FromBody] Account account)
         {
             if(_context.Accounts == null)
             {
                 return Problem("Entity set 'DBManager.Accounts'  is null.");
             }
+
+            // Navigation property should not be required from clients
+            if (ModelState.ContainsKey(nameof(Account.UserProfile)))
+            {
+                ModelState.Remove(nameof(Account.UserProfile));
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
             _context.Accounts.Add(account);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetAccount", new { accountNumber = account.AccountNumber }, account );

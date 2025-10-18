@@ -186,6 +186,26 @@ namespace BankWebService.Data
 
             users.Add(new UserProfile
             {
+                Username = "BankAdmin2",
+                Email = "admin2@bank.local",
+                Address = "Head Office",
+                Phone = "+0000000000",
+                Picture = "/images/admin.png",
+                Password = "ChangeMe!123"
+            });
+
+            users.Add(new UserProfile
+            {
+                Username = "BankAdmin3",
+                Email = "admin3@bank.local",
+                Address = "Head Office",
+                Phone = "+0000000000",
+                Picture = "/images/admin.png",
+                Password = "ChangeMe!123"
+            });
+
+            users.Add(new UserProfile
+            {
                 Username = "MoeDegrasse",
                 Email = "MoeDegrasse@email.com",
                 Address = "17 Harper Street, City 2",
