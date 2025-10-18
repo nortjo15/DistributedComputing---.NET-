@@ -219,5 +219,40 @@ namespace BankWebApp.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        // Change a user's password (from modal)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeUserPassword(ChangePasswordRequest req)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                TempData["Error"] = string.IsNullOrWhiteSpace(errors) ? "Invalid password form input." : errors;
+                return RedirectToAction(nameof(Index));
+            }
+
+            var client = _clientFactory.CreateClient("BankApi");
+            try
+            {
+                var resp = await client.PutAsJsonAsync($"api/userprofile/{Uri.EscapeDataString(req.Username)}/password", req);
+                if (!resp.IsSuccessStatusCode)
+                {
+                    var body = await resp.Content.ReadAsStringAsync();
+                    TempData["Error"] = $"Change password failed: {(int)resp.StatusCode} {resp.ReasonPhrase}. {body}";
+                }
+                else
+                {
+                    TempData["Message"] = $"Password updated for {req.Username}.";
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ChangeUserPassword error for {Username}", req.Username);
+                TempData["Error"] = $"ChangeUserPassword error: {ex.Message}";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
