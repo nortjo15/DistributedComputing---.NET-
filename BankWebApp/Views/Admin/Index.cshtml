@@ -6,6 +6,15 @@
 <h1>Admin dashboard</h1>
 <p>This page calls the BankWebService API and lists user profiles, accounts, and transactions.</p>
 
+@if (TempData["Error"] is string err && !string.IsNullOrWhiteSpace(err))
+{
+    <div class="alert alert-danger">@err</div>
+}
+@if (TempData["Message"] is string msg && !string.IsNullOrWhiteSpace(msg))
+{
+    <div class="alert alert-success">@msg</div>
+}
+
 @if (Model.Admin is not null)
 {
     <div class="card mb-4">
@@ -24,7 +33,8 @@
 <div class="card mb-4">
     <div class="card-header">Create Account</div>
     <div class="card-body">
-        <form asp-action="CreateAccount" method="post" class="row gy-2 gx-2 align-items-end">
+        <form asp-controller="Admin" asp-action="CreateAccount" method="post" class="row gy-2 gx-2 align-items-end">
+            @Html.AntiForgeryToken()
             <div class="col-md-3">
                 <label class="form-label">Username</label>
                 <input name="Username" class="form-control" required />
@@ -90,14 +100,16 @@
                 <td>@a.Email</td>
                 <td class="text-end">@a.Balance</td>
                 <td>
-                    <form asp-action="UpdateAccount" method="post" class="d-inline">
+                    <form asp-controller="Admin" asp-action="UpdateAccount" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
                         <input type="hidden" name="AccountNumber" value="@a.AccountNumber" />
                         <input type="hidden" name="Username" value="@a.Username" />
                         <input type="hidden" name="Email" value="@a.Email" />
                         <input type="number" name="Balance" step="0.01" class="form-control form-control-sm d-inline w-auto" value="@a.Balance" />
                         <button type="submit" class="btn btn-sm btn-outline-primary ms-1">Update</button>
                     </form>
-                    <form asp-action="DeleteAccount" method="post" class="d-inline ms-2" onsubmit="return confirm('Delete account @a.AccountNumber?');">
+                    <form asp-controller="Admin" asp-action="DeleteAccount" method="post" class="d-inline ms-2" onsubmit="return confirm('Delete account @a.AccountNumber?');">
+                        @Html.AntiForgeryToken()
                         <input type="hidden" name="accountNumber" value="@a.AccountNumber" />
                         <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                     </form>

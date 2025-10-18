@@ -68,14 +68,38 @@ namespace BankWebApp.Controllers
 
         // C - Create account
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateAccount(CreateAccountRequest req)
         {
-            if (!ModelState.IsValid) return RedirectToAction(nameof(Index));
+            if (!ModelState.IsValid)
+            {
+                var errors = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                TempData["Error"] = string.IsNullOrWhiteSpace(errors) ? "Invalid form input." : errors;
+                _logger.LogWarning("CreateAccount invalid: {Errors}", TempData["Error"]);
+                return RedirectToAction(nameof(Index));
+            }
+
             var client = _clientFactory.CreateClient("BankApi");
+
+            // Ensure user exists first (FK constraint)
+            try
+            {
+                var userCheck = await client.GetAsync($"api/userprofile/by-username/{Uri.EscapeDataString(req.Username)}");
+                if (!userCheck.IsSuccessStatusCode)
+                {
+                    TempData["Error"] = $"User '{req.Username}' does not exist. Create the user profile first.";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Failed to verify user '{req.Username}': {ex.Message}";
+                _logger.LogError(ex, "User existence check failed");
+                return RedirectToAction(nameof(Index));
+            }
 
             var account = new AccountDto
             {
-                // AccountNumber is DB-generated (autoincrement)
                 Username = req.Username,
                 Email = req.Email,
                 Balance = req.Balance
@@ -86,18 +110,26 @@ namespace BankWebApp.Controllers
                 var resp = await client.PostAsJsonAsync("api/account/create_account", account);
                 if (!resp.IsSuccessStatusCode)
                 {
-                    _logger.LogWarning("CreateAccount failed: {Status}", resp.StatusCode);
+                    var body = await resp.Content.ReadAsStringAsync();
+                    var msg = $"CreateAccount failed: {(int)resp.StatusCode} {resp.ReasonPhrase}. {body}";
+                    TempData["Error"] = msg;
+                    _logger.LogWarning(msg);
+                }
+                else
+                {
+                    TempData["Message"] = "Account created.";
                 }
             }
             catch (Exception ex)
             {
+                TempData["Error"] = $"CreateAccount error: {ex.Message}";
                 _logger.LogError(ex, "CreateAccount error");
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        // R - Get account by number (simple redirect to Index after fetching is omitted, index already lists all)
+        // R - Get account by number (optional: highlight on page)
         [HttpGet]
         public async Task<IActionResult> GetAccount(int accountNumber)
         {
@@ -105,10 +137,18 @@ namespace BankWebApp.Controllers
             try
             {
                 var account = await client.GetFromJsonAsync<AccountDto>($"api/account/{accountNumber}");
-                TempData["SelectedAccount"] = accountNumber;
+                if (account == null)
+                {
+                    TempData["Error"] = $"Account {accountNumber} not found.";
+                }
+                else
+                {
+                    TempData["Message"] = $"Fetched account {accountNumber}.";
+                }
             }
             catch (Exception ex)
             {
+                TempData["Error"] = $"GetAccount error: {ex.Message}";
                 _logger.LogError(ex, "GetAccount error for {AccountNumber}", accountNumber);
             }
             return RedirectToAction(nameof(Index));
@@ -116,20 +156,36 @@ namespace BankWebApp.Controllers
 
         // U - Update account
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateAccount(AccountDto account)
         {
-            if (!ModelState.IsValid) return RedirectToAction(nameof(Index));
+            if (!ModelState.IsValid)
+            {
+                var errors = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                TempData["Error"] = string.IsNullOrWhiteSpace(errors) ? "Invalid form input." : errors;
+                _logger.LogWarning("UpdateAccount invalid: {Errors}", TempData["Error"]);
+                return RedirectToAction(nameof(Index));
+            }
+
             var client = _clientFactory.CreateClient("BankApi");
             try
             {
                 var resp = await client.PutAsJsonAsync($"api/account/{account.AccountNumber}", account);
                 if (!resp.IsSuccessStatusCode)
                 {
-                    _logger.LogWarning("UpdateAccount failed: {Status}", resp.StatusCode);
+                    var body = await resp.Content.ReadAsStringAsync();
+                    var msg = $"UpdateAccount failed: {(int)resp.StatusCode} {resp.ReasonPhrase}. {body}";
+                    TempData["Error"] = msg;
+                    _logger.LogWarning(msg);
+                }
+                else
+                {
+                    TempData["Message"] = $"Account {account.AccountNumber} updated.";
                 }
             }
             catch (Exception ex)
             {
+                TempData["Error"] = $"UpdateAccount error: {ex.Message}";
                 _logger.LogError(ex, "UpdateAccount error for {AccountNumber}", account.AccountNumber);
             }
             return RedirectToAction(nameof(Index));
@@ -137,6 +193,7 @@ namespace BankWebApp.Controllers
 
         // D - Delete account
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteAccount(int accountNumber)
         {
             var client = _clientFactory.CreateClient("BankApi");
@@ -145,11 +202,19 @@ namespace BankWebApp.Controllers
                 var resp = await client.DeleteAsync($"api/account/{accountNumber}");
                 if (!resp.IsSuccessStatusCode)
                 {
-                    _logger.LogWarning("DeleteAccount failed: {Status}", resp.StatusCode);
+                    var body = await resp.Content.ReadAsStringAsync();
+                    var msg = $"DeleteAccount failed: {(int)resp.StatusCode} {resp.ReasonPhrase}. {body}";
+                    TempData["Error"] = msg;
+                    _logger.LogWarning(msg);
+                }
+                else
+                {
+                    TempData["Message"] = $"Account {accountNumber} deleted.";
                 }
             }
             catch (Exception ex)
             {
+                TempData["Error"] = $"DeleteAccount error: {ex.Message}";
                 _logger.LogError(ex, "DeleteAccount error for {AccountNumber}", accountNumber);
             }
             return RedirectToAction(nameof(Index));
