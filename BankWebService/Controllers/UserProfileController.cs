@@ -109,6 +109,46 @@ namespace BankWebService.Controllers
             return NoContent();
         }
 
+        // Change password
+        // PUT: api/userprofile/{username}/password
+        [HttpPut("{username}/password")]
+        public async Task<IActionResult> ChangePassword(string username, [FromBody] ChangePasswordRequest request)
+        {
+            if (_context.UserProfiles == null)
+            {
+                return NotFound();
+            }
+
+            if (request == null || !string.Equals(username, request.Username, StringComparison.Ordinal))
+            {
+                return BadRequest("Username mismatch or empty request");
+            }
+
+            var user = await _context.UserProfiles.FindAsync(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Optional current password check (if provided)
+            if (!string.IsNullOrEmpty(request.CurrentPassword) && !string.Equals(user.Password, request.CurrentPassword))
+            {
+                return BadRequest("Current password is incorrect");
+            }
+
+            // Basic length validation already enforced by model, but double-check here
+            if (string.IsNullOrWhiteSpace(request.NewPassword) || request.NewPassword.Length > 30)
+            {
+                return BadRequest("New password invalid");
+            }
+
+            user.Password = request.NewPassword;
+            _context.Entry(user).Property(u => u.Password).IsModified = true;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         // Delete User Profile
         // DELETE: api/userprofile/{username}
         [HttpDelete("{username}")]
