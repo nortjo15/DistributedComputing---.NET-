@@ -1,0 +1,185 @@
+﻿@model BankWebApp.Models.UserDashboardViewModel
+@{
+    ViewData["Title"] = "User Dashboard";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Welcome, @Model.Profile?.Username</h2>
+
+    <div class="row">
+        <!-- Profile Info -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <strong>Profile Information</strong>
+                </div>
+                <div class="card-body">
+                    <p><strong>Username:</strong> @Model.Profile?.Username</p>
+                    <p><strong>Email:</strong> @Model.Profile?.Email</p>
+                    <p><strong>Address:</strong> @Model.Profile?.Address</p>
+                    <p><strong>Phone:</strong> @Model.Profile?.Phone</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Summary -->
+        <div class="col-md-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <strong>Your Accounts</strong>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Account #</th>
+                                <th>Name</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var a in Model.Accounts?.Where(x => x.Username == Model.Profile?.Username) ?? new List<BankWebApp.Models.AccountDto>())
+                            {
+                                <tr>
+                                    <td>@a.AccountNumber</td>
+                                    <td>@a.Name</td>
+                                    <td>@a.Balance.ToString("C")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-info text-white">
+            <strong>Transaction History</strong>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Account #</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var userAccounts = Model.Accounts?.Where(a => a.Username == Model.Profile?.Username)
+                        .Select(a => a.AccountNumber)
+                        .ToHashSet() ?? new HashSet<int>();
+                        var userTx = Model.Transactions?.Where(t => userAccounts.Contains(t.AccountNumber)) ?? new List<BankWebApp.Models.TransactionDto>();
+                    }
+                    @if (userTx.Any())
+                    {
+                        foreach (var transaction in userTx)
+                        {
+                            var account = Model.Accounts?.FirstOrDefault(a => a.AccountNumber == transaction.AccountNumber);
+                            <tr>
+                                <td>@transaction.Type</td>
+                                <td>@transaction.Amount.ToString("C")</td>
+                                <td>@(account != null ? account.Name : "Unknown")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No transactions available.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Money Transfer -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-warning">
+            <strong>Money Transfer</strong>
+        </div>
+        <div class="card-body">
+            <form asp-action="Transfer" method="post" id="transferForm">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">From Account</label>
+                        <select name="FromAccountId" id="fromAccount" class="form-select" required>
+                            <option value="">Select Account</option>
+                            @foreach (var a in Model.Accounts?.Where(x => x.Username == Model.Profile?.Username) ?? new List<BankWebApp.Models.AccountDto>())
+                            {
+                                <option value="@a.AccountNumber">@a.Name (@a.AccountNumber)</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Recipient User</label>
+                        <select id="toUser" class="form-select" required>
+                            <option value="">Select User</option>
+                            @foreach (var u in Model.Accounts?.Select(a => a.Username).Distinct() ?? new List<string>())
+                            {
+                                if (u != Model.Profile?.Username)
+                                {
+                                    <option value="@u">@u</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">To Account</label>
+                        <select name="ToAccountId" id="toAccount" class="form-select" required disabled>
+                            <option value="">Select Account</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Amount</label>
+                    <input type="number" step="0.01" name="Amount" class="form-control" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit Transfer</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Security -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-secondary text-white">
+            <strong>Security</strong>
+        </div>
+        <div class="card-body">
+            <p>You can reset your password on the <a asp-action="Security">Security Page</a>.</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const allAccounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Accounts ?? new List<BankWebApp.Models.AccountDto>()));
+
+        document.getElementById('toUser').addEventListener('change', function () {
+            const selectedUser = this.value;
+            const toAccountSelect = document.getElementById('toAccount');
+            toAccountSelect.innerHTML = '<option value="">Select Account</option>';
+            toAccountSelect.disabled = true;
+
+            if (selectedUser) {
+                const accounts = allAccounts.filter(a => a.username === selectedUser || a.Username === selectedUser);
+                accounts.forEach(a => {
+                    const opt = document.createElement('option');
+                    opt.value = a.accountNumber || a.AccountNumber;
+                    opt.textContent = `${a.name || a.Name} (${a.accountNumber || a.AccountNumber})`;
+                    toAccountSelect.appendChild(opt);
+                });
+                toAccountSelect.disabled = accounts.length === 0;
+            }
+        });
+    </script>
+}

@@ -10,10 +10,10 @@ namespace BankWebService.Data
 {
     public class DBManager : DbContext
     {
-        private const int numberOfUsers = 5;    //Number of users seeded into database
+        private const int numberOfUsers = 7;    //Number of users seeded into database
         private const int numberOfIcons = 5;    //How many profile icons there are
-        private const int maxAccounts = 3;      //Maximum number of accounts seeded in
-        private const int maxTransactions = 10; //Maximum number of transactions seeded in
+        private const int maxAccounts = 5;      //Maximum number of accounts seeded in
+        private const int maxTransactions = 14; //Maximum number of transactions seeded in
 
         public DBManager(DbContextOptions<DBManager> options) : base(options) { }
         public DbSet<Account> Accounts { get; set; }
@@ -49,6 +49,7 @@ namespace BankWebService.Data
             {
                 e.ToTable("Bank_Accounts");
                 e.HasKey(x => x.AccountNumber);
+                e.Property(x => x.Name).IsRequired().HasMaxLength(20);
                 e.Property(x => x.Balance).IsRequired();
                 e.HasOne(a => a.UserProfile)
                     .WithMany(u => u.Accounts)
@@ -144,6 +145,7 @@ namespace BankWebService.Data
                     var account = new Account
                     {
                         AccountNumber = accountIdCounter,
+                        Name = $"{first}'s Account {a + 1}",
                         Username = user.Username,
                         Balance = rand.Next(100, 10000),
                         Email = user.Email
