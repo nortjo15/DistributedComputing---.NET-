@@ -54,28 +54,10 @@
     </div>
 </div>
 
-<div class="card mb-4">
-    <div class="card-header">Change User Password</div>
-    <div class="card-body">
-        <form asp-controller="Admin" asp-action="ChangeUserPassword" method="post" class="row gy-2 gx-2 align-items-end">
-            @Html.AntiForgeryToken()
-            <div class="col-md-3">
-                <label class="form-label">Username</label>
-                <input name="Username" class="form-control" required />
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">New Password</label>
-                <input name="NewPassword" class="form-control" required />
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-warning">Change Password</button>
-            </div>
-        </form>
-    </div>
-</div>
 
-<div class="table-responsive">
-    <h2>Users</h2>
+
+<h2 id="usersHeader" style="cursor:pointer;">Users</h2>
+<div id="usersSection" class="table-responsive">
     <table class="table table-striped" id="usersTable">
         <thead>
             <tr>
@@ -131,8 +113,8 @@
   </div>
 </div>
 
-<div class="table-responsive">
-    <h2>Accounts</h2>
+<h2 id="accountsHeader" style="cursor:pointer;">Accounts</h2>
+<div id="accountsSection" class="table-responsive">
     <table class="table table-striped" id="accountsTable">
         <thead>
             <tr>
@@ -172,8 +154,8 @@
     </table>
 </div>
 
-<div class="table-responsive">
-    <h2>Transactions</h2>
+<h2 id="transactionsHeader" style="cursor:pointer;">Transactions</h2>
+<div id="transactionsSection" class="table-responsive">
     <select id="txTypeFilter" class="form-select form-select-sm w-auto mb-2">
         <option value="">All</option>
         <option value="Deposit">Deposit</option>
@@ -206,7 +188,7 @@
 <script>
   $(function () {
     // Users
-    $('#usersTable').DataTable({
+    const usersDt = $('#usersTable').DataTable({
       pageLength: 10,
       order: [],
       columnDefs: [
@@ -215,7 +197,7 @@
     });
 
     // Accounts
-    $('#accountsTable').DataTable({
+    const accountsDt = $('#accountsTable').DataTable({
       pageLength: 10,
       order: [[0, 'asc']],
       columnDefs: [
@@ -237,6 +219,23 @@
     // Filter by Type (column index 2)
     $('#txTypeFilter').on('change', function () {
       txTable.column(2).search(this.value).draw();
+    });
+
+    // Toggle sections by clicking headers
+    $('#usersHeader').on('click', function(){
+      $('#usersSection').slideToggle(150, function(){
+        if ($(this).is(':visible')) usersDt.columns.adjust();
+      });
+    });
+    $('#accountsHeader').on('click', function(){
+      $('#accountsSection').slideToggle(150, function(){
+        if ($(this).is(':visible')) accountsDt.columns.adjust();
+      });
+    });
+    $('#transactionsHeader').on('click', function(){
+      $('#transactionsSection').slideToggle(150, function(){
+        if ($(this).is(':visible')) txTable.columns.adjust();
+      });
     });
 
     // Change Password modal open
