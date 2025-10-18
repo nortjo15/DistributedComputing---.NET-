@@ -16,14 +16,16 @@ namespace BankWebService.Controllers
         [HttpPost("withdraw/{accountNumber}/{amount}")]
         public async Task<ActionResult<TransactionDto>> Withdraw(int accountNumber, decimal amount)
         {
-            var account = await _context.Accounts.FindAsync(accountNumber);
-            if (account == null) return NotFound();
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
+            if (account == null)
+                return NotFound("Account not found");
 
-            if (amount <= 0) return BadRequest("Amount must be greater than zero");
-            if (account.Balance < amount) return BadRequest("Insufficient funds");
+            // reject invalid amount values
+            if (amount <= 0)
+                return BadRequest("Amount must be greater than zero");
 
+            // allow overdraft
             account.Balance -= amount;
-            _context.Entry(account).State = EntityState.Modified;
 
             var tx = new Transaction
             {
@@ -32,6 +34,7 @@ namespace BankWebService.Controllers
                 Amount = amount,
                 Account = account
             };
+
             _context.Transactions.Add(tx);
             await _context.SaveChangesAsync();
 
@@ -44,15 +47,19 @@ namespace BankWebService.Controllers
             });
         }
 
+
         [HttpPost("deposit/{accountNumber}/{amount}")]
         public async Task<ActionResult<TransactionDto>> Deposit(int accountNumber, decimal amount)
         {
-            var account = await _context.Accounts.FindAsync(accountNumber);
-            if (account == null) return NotFound();
-            if (amount <= 0) return BadRequest("Amount must be greater than zero");
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
+            if (account == null)
+                return NotFound("Account not found");
+
+            // reject invalid amount values
+            if (amount <= 0)
+                return BadRequest("Amount must be greater than zero");
 
             account.Balance += amount;
-            _context.Entry(account).State = EntityState.Modified;
 
             var tx = new Transaction
             {
@@ -61,6 +68,7 @@ namespace BankWebService.Controllers
                 Amount = amount,
                 Account = account
             };
+
             _context.Transactions.Add(tx);
             await _context.SaveChangesAsync();
 
@@ -72,6 +80,7 @@ namespace BankWebService.Controllers
                 Amount = tx.Amount
             });
         }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<TransactionDto>> GetTransaction(int id)
