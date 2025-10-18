@@ -6,6 +6,44 @@
 <h1>Admin dashboard</h1>
 <p>This page calls the BankWebService API and lists user profiles, accounts, and transactions.</p>
 
+@if (Model.Admin is not null)
+{
+    <div class="card mb-4">
+        <div class="card-header">Admin</div>
+        <div class="card-body">
+            <div class="row g-2">
+                <div class="col-md-3"><strong>Username:</strong> @Model.Admin.Username</div>
+                <div class="col-md-3"><strong>Email:</strong> @Model.Admin.Email</div>
+                <div class="col-md-3"><strong>Phone:</strong> @Model.Admin.Phone</div>
+                <div class="col-md-3"><strong>Address:</strong> @Model.Admin.Address</div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="card mb-4">
+    <div class="card-header">Create Account</div>
+    <div class="card-body">
+        <form asp-action="CreateAccount" method="post" class="row gy-2 gx-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">Username</label>
+                <input name="Username" class="form-control" required />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Email</label>
+                <input name="Email" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Starting Balance</label>
+                <input name="Balance" type="number" step="0.01" class="form-control" value="0" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="table-responsive">
     <h2>Users</h2>
     <table class="table table-striped" id="usersTable">
@@ -40,6 +78,7 @@
                 <th>Username</th>
                 <th>Email</th>
                 <th class="text-end">Balance</th>
+                <th style="width:200px"></th>
             </tr>
         </thead>
         <tbody>
@@ -50,6 +89,19 @@
                 <td>@a.Username</td>
                 <td>@a.Email</td>
                 <td class="text-end">@a.Balance</td>
+                <td>
+                    <form asp-action="UpdateAccount" method="post" class="d-inline">
+                        <input type="hidden" name="AccountNumber" value="@a.AccountNumber" />
+                        <input type="hidden" name="Username" value="@a.Username" />
+                        <input type="hidden" name="Email" value="@a.Email" />
+                        <input type="number" name="Balance" step="0.01" class="form-control form-control-sm d-inline w-auto" value="@a.Balance" />
+                        <button type="submit" class="btn btn-sm btn-outline-primary ms-1">Update</button>
+                    </form>
+                    <form asp-action="DeleteAccount" method="post" class="d-inline ms-2" onsubmit="return confirm('Delete account @a.AccountNumber?');">
+                        <input type="hidden" name="accountNumber" value="@a.AccountNumber" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                    </form>
+                </td>
             </tr>
         }
         </tbody>
