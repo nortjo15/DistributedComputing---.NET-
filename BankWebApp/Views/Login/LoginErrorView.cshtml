@@ -36,15 +36,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    // Display the selected role in the login form
-    if (typeof selectedRole !== 'undefined' && selectedRole) {
-        document.addEventListener('DOMContentLoaded', function() {
-            const roleDisplay = document.getElementById('roleDisplay');
-            if (roleDisplay) {
-                roleDisplay.textContent = `Logging in as: ${selectedRole.toUpperCase()}`;
-            }
-        });
-    }
-</script>

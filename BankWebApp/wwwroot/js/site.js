@@ -126,5 +126,162 @@ function performLogout() {
     }
 }
 
+function createAccount() {
+    const username = document.getElementById('username').value;
+    const accountName = document.getElementById('accountName').value;
+    const email = document.getElementById('email').value;
+    const balance = parseFloat(document.getElementById('balance').value);
+
+    // Validate required fields
+    if (!username || !accountName) {
+        alert('Username and Account Name are required!');
+        return;
+    }
+
+    console.log('Creating account with:', { username, accountName, email, balance });
+
+    const accountData = {
+        Username: username,
+        Name: accountName,
+        Email: email,
+        Balance: balance
+    };
+
+    console.log('Sending JSON data:', JSON.stringify(accountData));
+
+    fetch('/Admin/CreateAccount', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(accountData)
+    })
+    .then(response => {
+        console.log('CreateAccount response status:', response.status);
+        return response.text();
+    })
+    .then(html => {
+        console.log('Received HTML response, updating main content');
+        document.getElementById('main').innerHTML = html;
+        
+        // Clear the form inputs only if successful
+        if (html.includes('Account created successfully') || html.includes('alert-success')) {
+            document.getElementById('username').value = '';
+            document.getElementById('accountName').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('balance').value = '0';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error creating account: ' + error.message);
+    });
+}
+
+function deleteAccount(accountNumber) {
+    if (!confirm(`Are you sure you want to delete account ${accountNumber}?`)) {
+        return;
+    }
+
+    console.log('Deleting account:', accountNumber);
+
+    fetch('/Admin/DeleteAccount', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ AccountNumber: accountNumber })
+    })
+    .then(response => {
+        console.log('DeleteAccount response status:', response.status);
+        return response.text();
+    })
+    .then(html => {
+        console.log('Received HTML response, updating main content');
+        document.getElementById('main').innerHTML = html;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error deleting account: ' + error.message);
+    });
+}
+
+function updateAccount(accountNumber, username, email) {
+    const balanceInput = document.getElementById(`balance-${accountNumber}`);
+    const newBalance = parseFloat(balanceInput.value);
+
+    if (isNaN(newBalance) || newBalance < 0) {
+        alert('Please enter a valid balance amount');
+        return;
+    }
+
+    console.log('Updating account:', { accountNumber, username, email, newBalance });
+
+    const accountData = {
+        AccountNumber: accountNumber,
+        Username: username,
+        Email: email,
+        Balance: newBalance,
+        Name: '' // Name is required but not used in update
+    };
+
+    fetch('/Admin/UpdateAccount', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(accountData)
+    })
+    .then(response => {
+        console.log('UpdateAccount response status:', response.status);
+        return response.text();
+    })
+    .then(html => {
+        console.log('Received HTML response, updating main content');
+        document.getElementById('main').innerHTML = html;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating account: ' + error.message);
+    });
+}
+
+function initializeTransferForm(allAccounts) {
+    const toUserSelect = document.getElementById('toUser');
+    const toAccountSelect = document.getElementById('toAccount');
+    
+    if (toUserSelect && toAccountSelect) {
+        toUserSelect.addEventListener('change', function () {
+            const selectedUser = this.value;
+            toAccountSelect.innerHTML = '<option value="">Select Account</option>';
+            toAccountSelect.disabled = true;
+
+            if (selectedUser) {
+                const accounts = allAccounts.filter(a => a.username === selectedUser || a.Username === selectedUser);
+                accounts.forEach(a => {
+                    const opt = document.createElement('option');
+                    opt.value = a.accountNumber || a.AccountNumber;
+                    opt.textContent = `${a.name || a.Name}`;
+                    toAccountSelect.appendChild(opt);
+                });
+                toAccountSelect.disabled = accounts.length === 0;
+            }
+        });
+    }
+}
+
+function displaySelectedRole() {
+    // Display the selected role in the login form
+    if (typeof selectedRole !== 'undefined' && selectedRole) {
+        const roleDisplay = document.getElementById('roleDisplay');
+        if (roleDisplay) {
+            roleDisplay.textContent = `Logging in as: ${selectedRole.toUpperCase()}`;
+        }
+    }
+}
+
 // DOMContentLoaded event
-document.addEventListener("DOMContentLoaded", loadView);
+document.addEventListener("DOMContentLoaded", function() {
+    loadView();
+    displaySelectedRole();
+});

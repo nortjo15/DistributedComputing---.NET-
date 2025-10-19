@@ -221,25 +221,6 @@
 @section Scripts {
     <script>
         const allAccounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model?.Accounts ?? new List<BankWebApp.Models.AccountDto>()));
-
-        document.getElementById('toUser')?.addEventListener('change', function () {
-            const selectedUser = this.value;
-            const toAccountSelect = document.getElementById('toAccount');
-            if (toAccountSelect) {
-                toAccountSelect.innerHTML = '<option value="">Select Account</option>';
-                toAccountSelect.disabled = true;
-
-                if (selectedUser) {
-                    const accounts = allAccounts.filter(a => a.username === selectedUser || a.Username === selectedUser);
-                    accounts.forEach(a => {
-                        const opt = document.createElement('option');
-                        opt.value = a.accountNumber || a.AccountNumber;
-                        opt.textContent = `${a.name || a.Name}`;
-                        toAccountSelect.appendChild(opt);
-                    });
-                    toAccountSelect.disabled = accounts.length === 0;
-                }
-            }
-        });
+        initializeTransferForm(allAccounts);
     </script>
 }
