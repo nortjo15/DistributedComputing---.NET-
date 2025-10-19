@@ -158,7 +158,7 @@
                 <strong>Money Transfer</strong>
             </div>
             <div class="card-body">
-                <form asp-action="Transfer" method="post" id="transferForm">
+                <form id="transferForm">
                     <input type="hidden" name="ToUsername" id="toUsername" value="" />
                     <div class="row mb-3">
                         <div class="col-md-4">
@@ -174,7 +174,7 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Recipient User</label>
-                            <select id="toUser" class="form-select" required onchange="document.getElementById('toUsername').value = this.value;">
+                            <select id="toUser" class="form-select" required>
                                 <option value="">Select User</option>
                                 @if (Model?.Profiles != null)
                                 {
@@ -192,7 +192,7 @@
                         
                         <div class="col-md-4">
                             <label class="form-label">To Account</label>
-                            <select name="ToAccountId" id="toAccount" class="form-select" required disabled>
+                            <select name="ToAccountId" id="toAccount" class="form-select" required>
                                 <option value="">Select Account</option>
                             </select>
                         </div>
@@ -203,10 +203,15 @@
                         <input type="number" step="0.01" name="Amount" class="form-control" required />
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Submit Transfer</button>
+                    <button type="button" class="btn btn-primary" onclick="submitTransfer()">Submit Transfer</button>
                 </form>
             </div>
         </div>
+        
+        <!-- Store accounts data for JavaScript -->
+        <script type="application/json" id="accountsData">
+            @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model?.Accounts ?? new List<BankWebApp.Models.AccountDto>()))
+        </script>
     }
 
     <!-- Security -->
@@ -219,10 +224,3 @@
         </div>
     </div> *@
 </div>
-
-@section Scripts {
-    <script>
-        const allAccounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model?.Accounts ?? new List<BankWebApp.Models.AccountDto>()));
-        initializeTransferForm(allAccounts);
-    </script>
-}

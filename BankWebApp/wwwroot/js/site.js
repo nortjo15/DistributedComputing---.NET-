@@ -60,6 +60,13 @@ function loadView(status, role = null) {
                 }, 100);
             }
             
+            // If loading user dashboard, initialize transfer form
+            if (status === "authview" && selectedRole === "user") {
+                setTimeout(() => {
+                    initializeUserDashboard();
+                }, 100);
+            }
+            
             if (status === "logout") {
                 // After logout, navigate back to role selection
                 selectedRole = null; // Clear selected role
@@ -256,26 +263,83 @@ function updateAccount(accountNumber, username, email) {
 }
 
 function initializeTransferForm(allAccounts) {
+    console.log('initializeTransferForm called with accounts:', allAccounts);
+    
     const toUserSelect = document.getElementById('toUser');
     const toAccountSelect = document.getElementById('toAccount');
+    const toUsernameInput = document.getElementById('toUsername');
+    
+    console.log('Elements found:', {
+        toUserSelect: !!toUserSelect,
+        toAccountSelect: !!toAccountSelect,
+        toUsernameInput: !!toUsernameInput
+    });
     
     if (toUserSelect && toAccountSelect) {
-        toUserSelect.addEventListener('change', function () {
+        // Initially disable the account select and clear it
+        toAccountSelect.disabled = true;
+        toAccountSelect.innerHTML = '<option value="">Select Account</option>';
+        
+        // Remove any existing event listeners
+        toUserSelect.replaceWith(toUserSelect.cloneNode(true));
+        const newToUserSelect = document.getElementById('toUser');
+        
+        newToUserSelect.addEventListener('change', function () {
             const selectedUser = this.value;
+            console.log('User selected:', selectedUser);
+            
+            // Clear previous options
             toAccountSelect.innerHTML = '<option value="">Select Account</option>';
-            toAccountSelect.disabled = true;
-
+            
             if (selectedUser) {
-                const accounts = allAccounts.filter(a => a.username === selectedUser || a.Username === selectedUser);
-                accounts.forEach(a => {
-                    const opt = document.createElement('option');
-                    opt.value = a.accountNumber || a.AccountNumber;
-                    opt.textContent = `${a.name || a.Name}`;
-                    toAccountSelect.appendChild(opt);
+                // Update the hidden input
+                if (toUsernameInput) {
+                    toUsernameInput.value = selectedUser;
+                    console.log('Updated toUsername input:', selectedUser);
+                }
+                
+                // Filter accounts for the selected user
+                const userAccounts = allAccounts.filter(account => {
+                    // Handle both possible property name cases
+                    const username = account.Username || account.username;
+                    return username === selectedUser;
                 });
-                toAccountSelect.disabled = accounts.length === 0;
+                
+                console.log('Filtered accounts for user:', userAccounts);
+                
+                // Add account options
+                userAccounts.forEach(account => {
+                    const option = document.createElement('option');
+                    // Handle both possible property name cases
+                    option.value = account.AccountNumber || account.accountNumber;
+                    option.textContent = account.Name || account.name;
+                    toAccountSelect.appendChild(option);
+                    console.log('Added account option:', option.textContent, 'with value:', option.value);
+                });
+                
+                // Enable the account select if there are accounts
+                toAccountSelect.disabled = userAccounts.length === 0;
+                
+                if (userAccounts.length === 0) {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'No accounts available';
+                    toAccountSelect.appendChild(option);
+                    console.log('No accounts found for user:', selectedUser);
+                }
+            } else {
+                // Clear the hidden input and disable account select
+                if (toUsernameInput) {
+                    toUsernameInput.value = '';
+                }
+                toAccountSelect.disabled = true;
+                console.log('No user selected, cleared form');
             }
         });
+        
+        console.log('Event listener attached successfully');
+    } else {
+        console.error('Required elements not found for transfer form initialization');
     }
 }
 
@@ -655,6 +719,29 @@ function initializeAdminDashboard() {
     }
 }
 
+// User Dashboard initialization function
+function initializeUserDashboard() {
+    console.log('Initializing user dashboard...');
+    
+    // Find accounts data from the JSON script tag
+    let allAccounts = [];
+    
+    const accountsDataScript = document.getElementById('accountsData');
+    if (accountsDataScript) {
+        try {
+            allAccounts = JSON.parse(accountsDataScript.textContent);
+            console.log('Found accounts data:', allAccounts);
+        } catch (e) {
+            console.error('Error parsing accounts data:', e);
+        }
+    } else {
+        console.warn('No accounts data script found, transfer form may not work properly');
+    }
+    
+    // Initialize the transfer form
+    initializeTransferForm(allAccounts);
+}
+
 // DataTable search functions for local filtering
 function searchUsersLocal() {
     const username = $('#searchUsername').val();
@@ -809,5 +896,58 @@ function submitPasswordChange() {
     .catch(error => {
         console.error('Error:', error);
         alert('Error changing password: ' + error.message);
+    });
+}
+
+function submitTransfer() {
+    const form = document.getElementById('transferForm');
+    const formData = new FormData(form);
+    
+    // Validate required fields
+    const fromAccount = formData.get('FromAccountId');
+    const toAccount = formData.get('ToAccountId');
+    const amount = formData.get('Amount');
+    
+    if (!fromAccount || !toAccount || !amount) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    if (parseFloat(amount) <= 0) {
+        alert('Please enter a valid amount greater than 0');
+        return;
+    }
+    
+    if (fromAccount === toAccount) {
+        alert('Cannot transfer to the same account');
+        return;
+    }
+
+    fetch('/User/Transfer', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            
+            // Clear the form
+            form.reset();
+            
+            // Reset the account dropdown
+            const toAccountSelect = document.getElementById('toAccount');
+            toAccountSelect.innerHTML = '<option value="">Select Account</option>';
+            toAccountSelect.disabled = true;
+            
+            // Clear the hidden username field
+            document.getElementById('toUsername').value = '';
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting transfer: ' + error.message);
     });
 }

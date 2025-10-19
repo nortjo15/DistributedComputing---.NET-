@@ -92,14 +92,12 @@ namespace BankWebApp.Controllers
 
                 depositResponse.ThrowIfError();
 
-                TempData["Message"] = "Transfer completed successfully.";
+                return Json(new { success = true, message = "Transfer completed successfully." });
             }
             catch (Exception ex)
             {
-                TempData["Message"] = $"Transfer failed: {ex.Message}";
+                return Json(new { success = false, message = $"Transfer failed: {ex.Message}" });
             }
-
-            return RedirectToAction("Index");
         }
 
         public IActionResult Security() => PartialView();
