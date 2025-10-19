@@ -11,12 +11,10 @@ namespace BankWebService.Controllers
     public class AccountController : ControllerBase
     {
         private readonly DBManager _context;
-        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(DBManager context, ILogger<AccountController> logger)
+        public AccountController(DBManager context)
         {
             _context = context;
-            _logger = logger;
         }
 
         [HttpPost("create_account")]
@@ -48,7 +46,6 @@ namespace BankWebService.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to create account");
                 return BadRequest($"Failed to create account: {ex.Message}");
             }
         }

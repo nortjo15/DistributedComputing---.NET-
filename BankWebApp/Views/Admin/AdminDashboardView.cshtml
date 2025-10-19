@@ -65,6 +65,24 @@
 
 <h2 id="usersHeader" style="cursor:pointer;">Users</h2>
 <div id="usersSection" class="table-responsive">
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label class="form-label">Search by Username</label>
+            <input type="text" id="searchUsername" class="form-control" placeholder="Enter username" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Search by Email</label>
+            <input type="text" id="searchEmail" class="form-control" placeholder="Enter email" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Search by Phone</label>
+            <input type="text" id="searchPhone" class="form-control" placeholder="Enter phone number" />
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="button" class="btn btn-primary me-2" onclick="searchUsersLocal()">Search</button>
+            <button type="button" class="btn btn-secondary" onclick="clearUserSearchLocal()">Clear</button>
+        </div>
+    </div>
     <table class="table table-striped" id="usersTable">
         <thead>
             <tr>
@@ -122,6 +140,24 @@
 
 <h2 id="accountsHeader" style="cursor:pointer;">Accounts</h2>
 <div id="accountsSection" class="table-responsive">
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label class="form-label">Search by Account Number</label>
+            <input type="number" id="searchAccountNumber" class="form-control" placeholder="Enter account number" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Search by Username</label>
+            <input type="text" id="searchAccountUsername" class="form-control" placeholder="Enter username" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Search by Email</label>
+            <input type="text" id="searchAccountEmail" class="form-control" placeholder="Enter email" />
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="button" class="btn btn-primary me-2" onclick="searchAccountsLocal()">Search</button>
+            <button type="button" class="btn btn-secondary" onclick="clearAccountSearchLocal()">Clear</button>
+        </div>
+    </div>
     <table class="table table-striped" id="accountsTable">
         <thead>
             <tr>
@@ -155,7 +191,29 @@
 
 <h2 id="transactionsHeader" style="cursor:pointer;">Transactions</h2>
 <div id="transactionsSection" class="table-responsive">
-    <select id="txTypeFilter" class="form-select form-select-sm w-auto mb-2">
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label class="form-label">Search by Transaction ID</label>
+            <input type="number" id="searchTransactionId" class="form-control" placeholder="Enter transaction ID" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Search by Account Number</label>
+            <input type="number" id="searchTransactionAccount" class="form-control" placeholder="Enter account number" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Filter by Type</label>
+            <select id="searchTransactionType" class="form-select">
+                <option value="">All Types</option>
+                <option value="Deposit">Deposit</option>
+                <option value="Withdraw">Withdraw</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="button" class="btn btn-primary me-2" onclick="searchTransactionsLocal()">Search</button>
+            <button type="button" class="btn btn-secondary" onclick="clearTransactionSearchLocal()">Clear</button>
+        </div>
+    </div>
+    <select id="txTypeFilter" class="form-select form-select-sm w-auto mb-2" style="display: none;">
         <option value="">All</option>
         <option value="Deposit">Deposit</option>
         <option value="Withdraw">Withdraw</option>
@@ -185,66 +243,9 @@
 
 @section Scripts {
 <script>
-  $(function () {
-    // Users
-    const usersDt = $('#usersTable').DataTable({
-      pageLength: 10,
-      order: [],
-      columnDefs: [
-        { targets: -1, orderable: false, searchable: false }
-      ]
+    // Initialize admin dashboard when the page loads
+    $(function () {
+        initializeAdminDashboard();
     });
-
-    // Accounts
-    const accountsDt = $('#accountsTable').DataTable({
-      pageLength: 10,
-      order: [[0, 'asc']],
-      columnDefs: [
-        { targets: 0, type: 'num' },
-        { targets: 3, render: $.fn.dataTable.render.number(',', '.', 2) }
-      ]
-    });
-
-    // Transactions
-    const txTable = $('#transactionsTable').DataTable({
-      pageLength: 25,
-      order: [[0, 'desc']],
-      columnDefs: [
-        { targets: [0, 1], type: 'num' },
-        { targets: 3, render: $.fn.dataTable.render.number(',', '.', 2) }
-      ]
-    });
-
-    // Filter by Type (column index 2)
-    $('#txTypeFilter').on('change', function () {
-      txTable.column(2).search(this.value).draw();
-    });
-
-    // Toggle sections by clicking headers
-    $('#usersHeader').on('click', function(){
-      $('#usersSection').slideToggle(150, function(){
-        if ($(this).is(':visible')) usersDt.columns.adjust();
-      });
-    });
-    $('#accountsHeader').on('click', function(){
-      $('#accountsSection').slideToggle(150, function(){
-        if ($(this).is(':visible')) accountsDt.columns.adjust();
-      });
-    });
-    $('#transactionsHeader').on('click', function(){
-      $('#transactionsSection').slideToggle(150, function(){
-        if ($(this).is(':visible')) txTable.columns.adjust();
-      });
-    });
-
-    // Change Password modal open
-    $(document).on('click', '.btn-change-password', function () {
-      const username = $(this).data('username');
-      $('#cp-username').val(username);
-      $('#cp-username-display').text(username);
-      const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
-      modal.show();
-    });
-  });
 </script>
 }

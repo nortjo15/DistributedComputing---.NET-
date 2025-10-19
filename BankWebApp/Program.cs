@@ -3,10 +3,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Configure HttpClient to talk to the WebService
-var bankApiBase = builder.Configuration.GetValue<string>("BankApi:BaseUrl") ?? "https://localhost:7001/";
-builder.Services.AddHttpClient("BankApi", client => client.BaseAddress = new Uri(bankApiBase));
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
