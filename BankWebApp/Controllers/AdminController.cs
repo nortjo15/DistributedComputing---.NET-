@@ -73,7 +73,7 @@ namespace BankWebApp.Controllers
                 Admin = admin
             };
 
-            return PartialView("AdminDashboardView", model);
+            return View("AdminDashboardView", model);
         }
 
         // C - Create account
@@ -254,13 +254,13 @@ namespace BankWebApp.Controllers
         // Change a user's password (from modal)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangeUserPassword(ChangePasswordRequest req)
+        public async Task<IActionResult> ChangeUserPassword([FromForm] ChangePasswordRequest req)
         {
             if (!ModelState.IsValid)
             {
                 var errors = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = string.IsNullOrWhiteSpace(errors) ? "Invalid password form input." : errors;
-                return await GetView();
+                return RedirectToAction(nameof(Index));
             }
 
             try
@@ -284,7 +284,8 @@ namespace BankWebApp.Controllers
                 TempData["Error"] = $"ChangeUserPassword error: {ex.Message}";
             }
 
-            return await GetView();
+            // Redirect to reload full layout and scripts so Bootstrap remains active
+            return RedirectToAction(nameof(Index));
         }
 
         // Search users by username or email

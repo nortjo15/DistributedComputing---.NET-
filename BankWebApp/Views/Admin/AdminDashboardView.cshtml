@@ -102,7 +102,12 @@
                 <td>@u.Address</td>
                 <td>@u.Phone</td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-outline-warning btn-change-password" data-username="@u.Username">
+                    <button type="button"
+                            class="btn btn-sm btn-outline-warning btn-change-password"
+                            data-bs-toggle="modal"
+                            data-bs-target="#changePasswordModal"
+                            data-username="@u.Username"
+                            onclick="(function(un){ var iu=document.getElementById('cp-username'); if(iu) iu.value=un; var du=document.getElementById('cp-username-display'); if(du) du.textContent=un; })('@u.Username')">
                         Change Password
                     </button>
                 </td>
@@ -126,7 +131,7 @@
           <input type="hidden" name="Username" id="cp-username" />
           <div class="mb-3">
             <label class="form-label">New Password</label>
-            <input name="NewPassword" class="form-control" required maxlength="30" />
+            <input name="NewPassword" type="password" class="form-control" required maxlength="30" />
           </div>
         </div>
         <div class="modal-footer">
@@ -245,7 +250,30 @@
 <script>
     // Initialize admin dashboard when the page loads
     $(function () {
-        initializeAdminDashboard();
+        // Guard optional initializer so the rest of this script still runs
+        if (typeof initializeAdminDashboard === 'function') {
+            try { initializeAdminDashboard(); } catch (e) { /* ignore */ }
+        }
+
+        // Populate username when modal is about to be shown (Bootstrap data API)
+        const modalEl = document.getElementById('changePasswordModal');
+        if (modalEl) {
+            modalEl.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget; // Button that triggered the modal
+                const username = button?.getAttribute('data-username') || '';
+                $('#cp-username').val(username);
+                $('#cp-username-display').text(username);
+            });
+        }
+
+        // Fallback: explicitly open the modal and set username if data API didn’t fire
+        $(document).on('click', '.btn-change-password', function () {
+            const username = $(this).data('username') || '';
+            $('#cp-username').val(username);
+            $('#cp-username-display').text(username);
+            const modalInstance = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+            modalInstance.show();
+        });
     });
 </script>
 }
