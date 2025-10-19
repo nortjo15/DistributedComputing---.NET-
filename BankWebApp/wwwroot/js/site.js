@@ -777,7 +777,5 @@ function changeUserPassword() {
     
     // Clear the form
     document.getElementById('cp-new-password').value = '';
-    
-    // Show a placeholder message (you can implement actual password change later)
-    alert('Password change functionality is available but not yet implemented');
+   
 }
