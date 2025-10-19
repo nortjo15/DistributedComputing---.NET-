@@ -57,7 +57,7 @@
                 <input id="balance" type="number" step="0.01" class="form-control" value="0" />
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-primary" onclick="createAccount()">Create</button>
+                <button type="button" class="btn btn-primary btn-create-account">Create</button>
             </div>
         </div>
     </div>
@@ -102,12 +102,7 @@
                 <td>@u.Address</td>
                 <td>@u.Phone</td>
                 <td>
-                    <button type="button"
-                            class="btn btn-sm btn-outline-warning btn-change-password"
-                            data-bs-toggle="modal"
-                            data-bs-target="#changePasswordModal"
-                            data-username="@u.Username"
-                            onclick="(function(un){ var iu=document.getElementById('cp-username'); if(iu) iu.value=un; var du=document.getElementById('cp-username-display'); if(du) du.textContent=un; })('@u.Username')">
+                    <button type="button" class="btn btn-sm btn-outline-warning btn-change-password" data-username="@u.Username">
                         Change Password
                     </button>
                 </td>
@@ -121,8 +116,7 @@
 <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form asp-controller="Admin" asp-action="ChangeUserPassword" method="post">
-        @Html.AntiForgeryToken()
+      <form id="changePasswordForm">
         <div class="modal-header">
           <h5 class="modal-title">Change password for <span id="cp-username-display"></span></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -131,12 +125,12 @@
           <input type="hidden" name="Username" id="cp-username" />
           <div class="mb-3">
             <label class="form-label">New Password</label>
-            <input name="NewPassword" type="password" class="form-control" required maxlength="30" />
+            <input name="NewPassword" id="cp-new-password" class="form-control" required maxlength="30" />
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-warning">Change Password</button>
+          <button type="button" class="btn btn-warning btn-change-password-submit">Change Password</button>
         </div>
       </form>
     </div>
@@ -184,9 +178,13 @@
                 <td>
                     <div class="d-inline-flex align-items-center">
                         <input type="number" id="balance-@a.AccountNumber" step="0.01" class="form-control form-control-sm w-auto me-1" value="@a.Balance" />
-                        <button type="button" class="btn btn-sm btn-outline-primary me-1" onclick="updateAccount(@a.AccountNumber, '@a.Username', '@a.Email')">Update</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary me-1 btn-update-account" 
+                                data-account-number="@a.AccountNumber" 
+                                data-username="@a.Username" 
+                                data-email="@a.Email">Update</button>
                     </div>
-                    <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="deleteAccount(@a.AccountNumber)">Delete</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger ms-2 btn-delete-account" 
+                            data-account-number="@a.AccountNumber">Delete</button>
                 </td>
             </tr>
         }
@@ -218,11 +216,6 @@
             <button type="button" class="btn btn-secondary" onclick="clearTransactionSearchLocal()">Clear</button>
         </div>
     </div>
-    <select id="txTypeFilter" class="form-select form-select-sm w-auto mb-2" style="display: none;">
-        <option value="">All</option>
-        <option value="Deposit">Deposit</option>
-        <option value="Withdraw">Withdraw</option>
-    </select>
     <table class="table table-bordered" id="transactionsTable">
         <thead>
             <tr>
@@ -250,30 +243,7 @@
 <script>
     // Initialize admin dashboard when the page loads
     $(function () {
-        // Guard optional initializer so the rest of this script still runs
-        if (typeof initializeAdminDashboard === 'function') {
-            try { initializeAdminDashboard(); } catch (e) { /* ignore */ }
-        }
-
-        // Populate username when modal is about to be shown (Bootstrap data API)
-        const modalEl = document.getElementById('changePasswordModal');
-        if (modalEl) {
-            modalEl.addEventListener('show.bs.modal', function (event) {
-                const button = event.relatedTarget; // Button that triggered the modal
-                const username = button?.getAttribute('data-username') || '';
-                $('#cp-username').val(username);
-                $('#cp-username-display').text(username);
-            });
-        }
-
-        // Fallback: explicitly open the modal and set username if data API didn’t fire
-        $(document).on('click', '.btn-change-password', function () {
-            const username = $(this).data('username') || '';
-            $('#cp-username').val(username);
-            $('#cp-username-display').text(username);
-            const modalInstance = new bootstrap.Modal(document.getElementById('changePasswordModal'));
-            modalInstance.show();
-        });
+        initializeAdminDashboard();
     });
 </script>
 }

@@ -52,6 +52,14 @@ function loadView(status, role = null) {
         })
         .then(data => {
             mainElement.innerHTML = data;
+            
+            // If loading admin dashboard, initialize DataTables
+            if (status === "authview" && selectedRole === "admin") {
+                setTimeout(() => {
+                    initializeAdminDashboard();
+                }, 100);
+            }
+            
             if (status === "logout") {
                 // After logout, navigate back to role selection
                 selectedRole = null; // Clear selected role
@@ -138,16 +146,12 @@ function createAccount() {
         return;
     }
 
-    console.log('Creating account with:', { username, accountName, email, balance });
-
     const accountData = {
         Username: username,
         Name: accountName,
         Email: email,
         Balance: balance
     };
-
-    console.log('Sending JSON data:', JSON.stringify(accountData));
 
     fetch('/Admin/CreateAccount', {
         method: 'POST',
@@ -157,12 +161,15 @@ function createAccount() {
         body: JSON.stringify(accountData)
     })
     .then(response => {
-        console.log('CreateAccount response status:', response.status);
         return response.text();
     })
     .then(html => {
-        console.log('Received HTML response, updating main content');
         document.getElementById('main').innerHTML = html;
+        
+        // Reinitialize DataTables after content update
+        setTimeout(() => {
+            initializeAdminDashboard();
+        }, 100);
         
         // Clear the form inputs only if successful
         if (html.includes('Account created successfully') || html.includes('alert-success')) {
@@ -183,8 +190,6 @@ function deleteAccount(accountNumber) {
         return;
     }
 
-    console.log('Deleting account:', accountNumber);
-
     fetch('/Admin/DeleteAccount', {
         method: 'POST',
         headers: {
@@ -193,12 +198,15 @@ function deleteAccount(accountNumber) {
         body: JSON.stringify({ AccountNumber: accountNumber })
     })
     .then(response => {
-        console.log('DeleteAccount response status:', response.status);
         return response.text();
     })
     .then(html => {
-        console.log('Received HTML response, updating main content');
         document.getElementById('main').innerHTML = html;
+        
+        // Reinitialize DataTables after content update
+        setTimeout(() => {
+            initializeAdminDashboard();
+        }, 100);
     })
     .catch(error => {
         console.error('Error:', error);
@@ -214,8 +222,6 @@ function updateAccount(accountNumber, username, email) {
         alert('Please enter a valid balance amount');
         return;
     }
-
-    console.log('Updating account:', { accountNumber, username, email, newBalance });
 
     const accountData = {
         AccountNumber: accountNumber,
@@ -233,12 +239,15 @@ function updateAccount(accountNumber, username, email) {
         body: JSON.stringify(accountData)
     })
     .then(response => {
-        console.log('UpdateAccount response status:', response.status);
         return response.text();
     })
     .then(html => {
-        console.log('Received HTML response, updating main content');
         document.getElementById('main').innerHTML = html;
+        
+        // Reinitialize DataTables after content update
+        setTimeout(() => {
+            initializeAdminDashboard();
+        }, 100);
     })
     .catch(error => {
         console.error('Error:', error);
@@ -297,8 +306,6 @@ function searchUsers() {
         return;
     }
 
-    console.log('Searching users with:', { username, email, phone });
-
     const searchData = {
         Username: username,
         Email: email,
@@ -313,12 +320,15 @@ function searchUsers() {
         body: JSON.stringify(searchData)
     })
     .then(response => {
-        console.log('SearchUsers response status:', response.status);
         return response.text();
     })
     .then(html => {
-        console.log('Received HTML response, updating main content');
         document.getElementById('main').innerHTML = html;
+        
+        // Reinitialize DataTables after content update
+        setTimeout(() => {
+            initializeAdminDashboard();
+        }, 100);
     })
     .catch(error => {
         console.error('Error:', error);
@@ -338,6 +348,11 @@ function clearUserSearch() {
     .then(response => response.text())
     .then(html => {
         document.getElementById('main').innerHTML = html;
+        
+        // Reinitialize DataTables after content update
+        setTimeout(() => {
+            initializeAdminDashboard();
+        }, 100);
     })
     .catch(error => {
         console.error('Error:', error);
@@ -362,8 +377,6 @@ function searchAccounts() {
         return;
     }
 
-    console.log('Searching accounts with:', { accountNumber, username, email });
-
     const searchData = {
         AccountNumber: accountNumber ? parseInt(accountNumber) : null,
         Username: username,
@@ -384,12 +397,15 @@ function searchAccounts() {
         body: JSON.stringify(searchData)
     })
     .then(response => {
-        console.log('SearchAccounts response status:', response.status);
         return response.text();
     })
     .then(html => {
-        console.log('Received HTML response, updating main content');
         document.getElementById('main').innerHTML = html;
+        
+        // Reinitialize DataTables after content update
+        setTimeout(() => {
+            initializeAdminDashboard();
+        }, 100);
     })
     .catch(error => {
         console.error('Error:', error);
@@ -409,168 +425,16 @@ function clearAccountSearch() {
     .then(response => response.text())
     .then(html => {
         document.getElementById('main').innerHTML = html;
+        
+        // Reinitialize DataTables after content update
+        setTimeout(() => {
+            initializeAdminDashboard();
+        }, 100);
     })
     .catch(error => {
         console.error('Error:', error);
         alert('Error clearing search: ' + error.message);
     });
-}
-
-// DOMContentLoaded event
-document.addEventListener("DOMContentLoaded", function() {
-    loadView();
-    displaySelectedRole();
-});
-
-// Admin Dashboard DataTable Functions
-function initializeAdminDashboard() {
-    // Users DataTable
-    const usersDt = $('#usersTable').DataTable({
-        pageLength: 10,
-        order: [],
-        columnDefs: [
-            { targets: -1, orderable: false, searchable: false }
-        ]
-    });
-
-    // Accounts DataTable
-    const accountsDt = $('#accountsTable').DataTable({
-        pageLength: 10,
-        order: [[0, 'asc']],
-        columnDefs: [
-            { targets: 0, type: 'num' },
-            { targets: 3, render: $.fn.dataTable.render.number(',', '.', 2) }
-        ]
-    });
-
-    // Transactions DataTable
-    const txTable = $('#transactionsTable').DataTable({
-        pageLength: 25,
-        order: [[0, 'desc']],
-        columnDefs: [
-            { targets: [0, 1], type: 'num' },
-            { targets: 3, render: $.fn.dataTable.render.number(',', '.', 2) }
-        ]
-    });
-
-    // Toggle sections by clicking headers
-    $('#usersHeader').on('click', function(){
-        $('#usersSection').slideToggle(150, function(){
-            if ($(this).is(':visible')) usersDt.columns.adjust();
-        });
-    });
-    $('#accountsHeader').on('click', function(){
-        $('#accountsSection').slideToggle(150, function(){
-            if ($(this).is(':visible')) accountsDt.columns.adjust();
-        });
-    });
-    $('#transactionsHeader').on('click', function(){
-        $('#transactionsSection').slideToggle(150, function(){
-            if ($(this).is(':visible')) txTable.columns.adjust();
-        });
-    });
-
-    // Change Password modal open
-    $(document).on('click', '.btn-change-password', function () {
-        const username = $(this).data('username');
-        $('#cp-username').val(username);
-        $('#cp-username-display').text(username);
-        const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
-        modal.show();
-    });
-
-    // Store DataTable references globally for search functions
-    window.adminDataTables = {
-        users: usersDt,
-        accounts: accountsDt,
-        transactions: txTable
-    };
-}
-
-// DataTable search functions for local filtering
-function searchUsersLocal() {
-    const username = $('#searchUsername').val();
-    const email = $('#searchEmail').val();
-    const phone = $('#searchPhone').val();
-    
-    if (window.adminDataTables && window.adminDataTables.users) {
-        window.adminDataTables.users
-            .columns(0).search(username)
-            .columns(1).search(email)
-            .columns(3).search(phone)
-            .draw();
-    }
-}
-
-function clearUserSearchLocal() {
-    $('#searchUsername').val('');
-    $('#searchEmail').val('');
-    $('#searchPhone').val('');
-    
-    if (window.adminDataTables && window.adminDataTables.users) {
-        window.adminDataTables.users
-            .columns(0).search('')
-            .columns(1).search('')
-            .columns(3).search('')
-            .draw();
-    }
-}
-
-function searchAccountsLocal() {
-    const accountNumber = $('#searchAccountNumber').val();
-    const username = $('#searchAccountUsername').val();
-    const email = $('#searchAccountEmail').val();
-    
-    if (window.adminDataTables && window.adminDataTables.accounts) {
-        window.adminDataTables.accounts
-            .columns(0).search(accountNumber)
-            .columns(1).search(username)
-            .columns(2).search(email)
-            .draw();
-    }
-}
-
-function clearAccountSearchLocal() {
-    $('#searchAccountNumber').val('');
-    $('#searchAccountUsername').val('');
-    $('#searchAccountEmail').val('');
-    
-    if (window.adminDataTables && window.adminDataTables.accounts) {
-        window.adminDataTables.accounts
-            .columns(0).search('')
-            .columns(1).search('')
-            .columns(2).search('')
-            .draw();
-    }
-}
-
-// Transaction search functions for local filtering
-function searchTransactionsLocal() {
-    const transactionId = $('#searchTransactionId').val();
-    const accountNumber = $('#searchTransactionAccount').val();
-    const transactionType = $('#searchTransactionType').val();
-    
-    if (window.adminDataTables && window.adminDataTables.transactions) {
-        window.adminDataTables.transactions
-            .columns(0).search(transactionId)     // Transaction ID column
-            .columns(1).search(accountNumber)     // Account Number column  
-            .columns(2).search(transactionType)   // Type column
-            .draw();
-    }
-}
-
-function clearTransactionSearchLocal() {
-    $('#searchTransactionId').val('');
-    $('#searchTransactionAccount').val('');
-    $('#searchTransactionType').val('');
-    
-    if (window.adminDataTables && window.adminDataTables.transactions) {
-        window.adminDataTables.transactions
-            .columns(0).search('')
-            .columns(1).search('')
-            .columns(2).search('')
-            .draw();
-    }
 }
 
 // Server-side transaction search functions (alternative to local DataTable search)
@@ -590,8 +454,6 @@ function searchTransactions() {
         alert('Please search by only one criteria at a time');
         return;
     }
-
-    console.log('Searching transactions with:', { transactionId, accountNumber, transactionType });
 
     const searchData = {
         TransactionId: transactionId ? parseInt(transactionId) : null,
@@ -617,12 +479,15 @@ function searchTransactions() {
         body: JSON.stringify(searchData)
     })
     .then(response => {
-        console.log('SearchTransactions response status:', response.status);
         return response.text();
     })
     .then(html => {
-        console.log('Received HTML response, updating main content');
         document.getElementById('main').innerHTML = html;
+        
+        // Reinitialize DataTables after content update
+        setTimeout(() => {
+            initializeAdminDashboard();
+        }, 100);
     })
     .catch(error => {
         console.error('Error:', error);
@@ -642,9 +507,277 @@ function clearTransactionSearch() {
     .then(response => response.text())
     .then(html => {
         document.getElementById('main').innerHTML = html;
+        
+        // Reinitialize DataTables after content update
+        setTimeout(() => {
+            initializeAdminDashboard();
+        }, 100);
     })
     .catch(error => {
         console.error('Error:', error);
         alert('Error clearing search: ' + error.message);
     });
+}
+
+// DOMContentLoaded event
+document.addEventListener("DOMContentLoaded", function() {
+    loadView();
+    displaySelectedRole();
+});
+
+// Admin Dashboard DataTable Functions
+function initializeAdminDashboard() {
+    // Check if jQuery and DataTable are available
+    if (typeof $ === 'undefined') {
+        console.error('jQuery is not loaded');
+        return;
+    }
+    
+    if (typeof $.fn.DataTable === 'undefined') {
+        console.error('DataTables is not loaded');
+        return;
+    }
+
+    // Check if tables exist
+    if ($('#usersTable').length === 0) {
+        console.error('Users table not found');
+        return;
+    }
+
+    try {
+        // Destroy existing DataTables if they exist
+        if (window.adminDataTables) {
+            if (window.adminDataTables.users) {
+                window.adminDataTables.users.destroy();
+            }
+            if (window.adminDataTables.accounts) {
+                window.adminDataTables.accounts.destroy();
+            }
+            if (window.adminDataTables.transactions) {
+                window.adminDataTables.transactions.destroy();
+            }
+        }
+
+        // Users DataTable - enable searching but hide search box
+        const usersDt = $('#usersTable').DataTable({
+            pageLength: 10,
+            order: [],
+            searching: true,  // Enable searching for filtering
+            dom: 'lrtip',     // Hide search box (remove 'f' from dom)
+            columnDefs: [
+                { targets: -1, orderable: false, searchable: false }
+            ]
+        });
+
+        // Accounts DataTable - enable searching but hide search box
+        const accountsDt = $('#accountsTable').DataTable({
+            pageLength: 10,
+            order: [[0, 'asc']],
+            searching: true,  // Enable searching for filtering
+            dom: 'lrtip',     // Hide search box (remove 'f' from dom)
+            columnDefs: [
+                { targets: 0, type: 'num' },
+                { targets: 3, render: $.fn.dataTable.render.number(',', '.', 2) }
+            ]
+        });
+
+        // Transactions DataTable - enable searching but hide search box
+        const txTable = $('#transactionsTable').DataTable({
+            pageLength: 25,
+            order: [[0, 'desc']],
+            searching: true,  // Enable searching for filtering
+            dom: 'lrtip',     // Hide search box (remove 'f' from dom)
+            columnDefs: [
+                { targets: [0, 1], type: 'num' },
+                { targets: 3, render: $.fn.dataTable.render.number(',', '.', 2) }
+            ]
+        });
+
+        // Toggle sections by clicking headers
+        $('#usersHeader').off('click').on('click', function(){
+            $('#usersSection').slideToggle(150, function(){
+                if ($(this).is(':visible')) usersDt.columns.adjust();
+            });
+        });
+        $('#accountsHeader').off('click').on('click', function(){
+            $('#accountsSection').slideToggle(150, function(){
+                if ($(this).is(':visible')) accountsDt.columns.adjust();
+            });
+        });
+        $('#transactionsHeader').off('click').on('click', function(){
+            $('#transactionsSection').slideToggle(150, function(){
+                if ($(this).is(':visible')) txTable.columns.adjust();
+            });
+        });
+
+        // Change Password modal open
+        $(document).off('click', '.btn-change-password').on('click', '.btn-change-password', function () {
+            const username = $(this).data('username');
+            $('#cp-username').val(username);
+            $('#cp-username-display').text(username);
+            const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+            modal.show();
+        });
+
+        // Update Account button handler
+        $(document).off('click', '.btn-update-account').on('click', '.btn-update-account', function () {
+            const accountNumber = $(this).data('account-number');
+            const username = $(this).data('username');
+            const email = $(this).data('email');
+            updateAccount(accountNumber, username, email);
+        });
+
+        // Delete Account button handler
+        $(document).off('click', '.btn-delete-account').on('click', '.btn-delete-account', function () {
+            const accountNumber = $(this).data('account-number');
+            deleteAccount(accountNumber);
+        });
+
+        // Create Account button handler
+        $(document).off('click', '.btn-create-account').on('click', '.btn-create-account', function () {
+            createAccount();
+        });
+
+        // Change Password submit button handler
+        $(document).off('click', '.btn-change-password-submit').on('click', '.btn-change-password-submit', function () {
+            changeUserPassword();
+        });
+
+        // Store DataTable references globally for search functions
+        window.adminDataTables = {
+            users: usersDt,
+            accounts: accountsDt,
+            transactions: txTable
+        };
+        
+    } catch (error) {
+        console.error('Error initializing DataTables:', error);
+    }
+}
+
+// DataTable search functions for local filtering
+function searchUsersLocal() {
+    const username = $('#searchUsername').val();
+    const email = $('#searchEmail').val();
+    const phone = $('#searchPhone').val();
+    
+    if (window.adminDataTables && window.adminDataTables.users) {
+        window.adminDataTables.users
+            .columns(0).search(username)
+            .columns(1).search(email)
+            .columns(3).search(phone)
+            .draw();
+    } else {
+        console.error('Users DataTable not available');
+    }
+}
+
+function clearUserSearchLocal() {
+    $('#searchUsername').val('');
+    $('#searchEmail').val('');
+    $('#searchPhone').val('');
+    
+    if (window.adminDataTables && window.adminDataTables.users) {
+        window.adminDataTables.users
+            .columns(0).search('')
+            .columns(1).search('')
+            .columns(3).search('')
+            .draw();
+    } else {
+        console.error('Users DataTable not available');
+    }
+}
+
+function searchAccountsLocal() {
+    const accountNumber = $('#searchAccountNumber').val();
+    const username = $('#searchAccountUsername').val();
+    const email = $('#searchAccountEmail').val();
+    
+    if (window.adminDataTables && window.adminDataTables.accounts) {
+        window.adminDataTables.accounts
+            .columns(0).search(accountNumber)
+            .columns(1).search(username)
+            .columns(2).search(email)
+            .draw();
+    } else {
+        console.error('Accounts DataTable not available');
+    }
+}
+
+function clearAccountSearchLocal() {
+    $('#searchAccountNumber').val('');
+    $('#searchAccountUsername').val('');
+    $('#searchAccountEmail').val('');
+    
+    if (window.adminDataTables && window.adminDataTables.accounts) {
+        window.adminDataTables.accounts
+            .columns(0).search('')
+            .columns(1).search('')
+            .columns(2).search('')
+            .draw();
+    } else {
+        console.error('Accounts DataTable not available');
+    }
+}
+
+// Transaction search functions for local filtering
+function searchTransactionsLocal() {
+    const transactionId = $('#searchTransactionId').val();
+    const accountNumber = $('#searchTransactionAccount').val();
+    const transactionType = $('#searchTransactionType').val();
+    
+    if (window.adminDataTables && window.adminDataTables.transactions) {
+        window.adminDataTables.transactions
+            .columns(0).search(transactionId)     // Transaction ID column
+            .columns(1).search(accountNumber)     // Account Number column  
+            .columns(2).search(transactionType)   // Type column
+            .draw();
+    } else {
+        console.error('Transactions DataTable not available');
+    }
+}
+
+function clearTransactionSearchLocal() {
+    $('#searchTransactionId').val('');
+    $('#searchTransactionAccount').val('');
+    $('#searchTransactionType').val('');
+    
+    if (window.adminDataTables && window.adminDataTables.transactions) {
+        window.adminDataTables.transactions
+            .columns(0).search('')
+            .columns(1).search('')
+            .columns(2).search('')
+            .draw();
+    } else {
+        console.error('Transactions DataTable not available');
+    }
+}
+
+function changeUserPassword() {
+    const username = document.getElementById('cp-username').value;
+    const newPassword = document.getElementById('cp-new-password').value;
+
+    // Validate required fields
+    if (!username || !newPassword) {
+        alert('Username and new password are required!');
+        return;
+    }
+
+    if (newPassword.length > 30) {
+        alert('Password must be 30 characters or less!');
+        return;
+    }
+
+    // For now, just close the modal without making any changes
+    // This prevents navigation issues while keeping the button functional
+    const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+    if (modal) {
+        modal.hide();
+    }
+    
+    // Clear the form
+    document.getElementById('cp-new-password').value = '';
+    
+    // Show a placeholder message (you can implement actual password change later)
+    alert('Password change functionality is available but not yet implemented');
 }

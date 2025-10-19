@@ -159,6 +159,7 @@
             </div>
             <div class="card-body">
                 <form asp-action="Transfer" method="post" id="transferForm">
+                    <input type="hidden" name="ToUsername" id="toUsername" value="" />
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label class="form-label">From Account</label>
@@ -173,7 +174,7 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Recipient User</label>
-                            <select id="toUser" class="form-select" required>
+                            <select id="toUser" class="form-select" required onchange="document.getElementById('toUsername').value = this.value;">
                                 <option value="">Select User</option>
                                 @if (Model?.Profiles != null)
                                 {
@@ -188,6 +189,7 @@
                             </select>
                         </div>
 
+                        
                         <div class="col-md-4">
                             <label class="form-label">To Account</label>
                             <select name="ToAccountId" id="toAccount" class="form-select" required disabled>
