@@ -15,6 +15,12 @@ namespace BankWebApp.Controllers
             _logger = logger;
         }
 
+        // Add missing Index method
+        public async Task<IActionResult> Index()
+        {
+            return await GetView();
+        }
+
         public async Task<IActionResult> GetView()
         {
             var client = _clientFactory.CreateClient("BankApi");
@@ -63,7 +69,7 @@ namespace BankWebApp.Controllers
                 Admin = admin
             };
 
-            return PartialView(model);
+            return PartialView("AdminDashboardView", model);
         }
 
         // C - Create account

@@ -15,6 +15,13 @@ namespace BankWebApp.Controllers
             _clientFactory = clientFactory;
             _logger = logger;
         }
+
+        // Add missing Index method
+        public async Task<IActionResult> Index()
+        {
+            return await GetView();
+        }
+
         public async Task<IActionResult> GetView()
         {
             var client = _clientFactory.CreateClient("BankApi");
@@ -23,29 +30,40 @@ namespace BankWebApp.Controllers
 
             try
             {
-                // Replace with actual logged-in username later
-                var username = "sarahdiaz655";
+                // Use a valid username from your seeded data
+                var username = "elizabethrivera552"; // This user exists in your seeded data
 
                 var profileTask = client.GetFromJsonAsync<UserProfileDto>($"api/UserProfile/by-username/{username}");
                 var accountsTask = client.GetFromJsonAsync<List<AccountDto>>("api/Account/all");
                 var transactionsTask = client.GetFromJsonAsync<List<TransactionDto>>("api/Transaction/all");
                 var profilesTask = client.GetFromJsonAsync<List<UserProfileDto>>("api/UserProfile/all");
+                
                 await Task.WhenAll(profileTask!, accountsTask!, transactionsTask!, profilesTask!);
 
                 var model = new UserDashboardViewModel
                 {
                     Profile = profileTask.Result,
-                    Accounts = accountsTask.Result,
-                    Transactions = transactionsTask.Result,
-                    Profiles = profilesTask.Result
+                    Accounts = accountsTask.Result ?? new List<AccountDto>(),
+                    Transactions = transactionsTask.Result ?? new List<TransactionDto>(),
+                    Profiles = profilesTask.Result ?? new List<UserProfileDto>()
                 };
 
-                return PartialView(model);
+                return PartialView("UserDashboardView", model);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "API fetch failed");
-                return PartialView(new UserDashboardViewModel());
+                
+                // Return a model with empty data instead of null
+                var emptyModel = new UserDashboardViewModel
+                {
+                    Profile = null,
+                    Accounts = new List<AccountDto>(),
+                    Transactions = new List<TransactionDto>(),
+                    Profiles = new List<UserProfileDto>()
+                };
+                
+                return PartialView("UserDashboardView", emptyModel);
             }
         }
 
@@ -89,6 +107,6 @@ namespace BankWebApp.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Security() => View();
+        public IActionResult Security() => PartialView();
     }
 }
