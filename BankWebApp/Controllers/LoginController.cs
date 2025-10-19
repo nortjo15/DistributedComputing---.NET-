@@ -41,7 +41,8 @@ namespace BankWebApp.Controllers
                     }
                     else if(role == "user")
                     {
-                        var userModel = await GetUserDashboardModel();
+                        var username = Request.Cookies["Username"];
+                        var userModel = await GetUserDashboardModel(username);
                         return PartialView("~/Views/User/UserDashboardView.cshtml", userModel);
                     }
                     else
@@ -60,6 +61,7 @@ namespace BankWebApp.Controllers
             return PartialView("LoginErrorView");
         }
 
+        // Helper method to get Admin Dashboard Model using RestSharp
         private async Task<AdminDashboardViewModel> GetAdminDashboardModel()
         {
             try
@@ -111,12 +113,10 @@ namespace BankWebApp.Controllers
         }
 
         // Helper method to get User Dashboard Model using RestSharp
-        private async Task<UserDashboardViewModel> GetUserDashboardModel()
+        private async Task<UserDashboardViewModel> GetUserDashboardModel(string username)
         {
             try
             {
-                var username = "elizabethrivera552"; // Use a valid username from seeded data
-                
                 var profileRequest = new RestRequest($"/api/UserProfile/by-username/{username}");
                 var accountsRequest = new RestRequest("/api/Account/all");
                 var transactionsRequest = new RestRequest("/api/Transaction/all");
@@ -180,6 +180,11 @@ namespace BankWebApp.Controllers
                         HttpOnly = true,
                         SameSite = SameSiteMode.Strict
                     });
+                    Response.Cookies.Append("Username", user.Username, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        SameSite = SameSiteMode.Strict
+                    });
                     response = new { login = true, role = user.Role };
                     return Json(response);
                 }
@@ -195,6 +200,11 @@ namespace BankWebApp.Controllers
                     if (profile != null && user.Username.Equals(profile.Username) && user.Password.Equals(profile.Password))
                     {
                         Response.Cookies.Append("SessionID", "1234567", new CookieOptions
+                        {
+                            HttpOnly = true,
+                            SameSite = SameSiteMode.Strict
+                        });
+                        Response.Cookies.Append("Username", user.Username, new CookieOptions
                         {
                             HttpOnly = true,
                             SameSite = SameSiteMode.Strict

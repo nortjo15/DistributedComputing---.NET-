@@ -16,7 +16,6 @@ namespace BankWebApp.Controllers
             _logger = logger;
         }
 
-        // Add missing Index method
         public async Task<IActionResult> Index()
         {
             return await GetView();
@@ -30,8 +29,7 @@ namespace BankWebApp.Controllers
 
             try
             {
-                // Use a valid username from your seeded data
-                var username = "elizabethrivera552"; // This user exists in your seeded data
+                var username = Request.Cookies["Username"];
 
                 var profileTask = client.GetFromJsonAsync<UserProfileDto>($"api/UserProfile/by-username/{username}");
                 var accountsTask = client.GetFromJsonAsync<List<AccountDto>>("api/Account/all");
@@ -54,7 +52,6 @@ namespace BankWebApp.Controllers
             {
                 _logger.LogError(ex, "API fetch failed");
                 
-                // Return a model with empty data instead of null
                 var emptyModel = new UserDashboardViewModel
                 {
                     Profile = null,
