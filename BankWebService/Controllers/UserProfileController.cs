@@ -61,7 +61,8 @@ namespace BankWebService.Controllers
                 Email = p.Email,
                 Address = p.Address,
                 Phone = p.Phone,
-                Picture = p.Picture
+                Picture = p.Picture,
+                Password = p.Password // Include password for authentication purposes
             };
         }
 
