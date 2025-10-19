@@ -14,7 +14,6 @@ namespace BankWebApp.Controllers
             _client = new RestClient("http://localhost:5142");
         }
 
-        // Add missing Index method
         public async Task<IActionResult> Index()
         {
             return await GetView();
@@ -253,14 +252,12 @@ namespace BankWebApp.Controllers
 
         // Change a user's password (from modal)
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeUserPassword([FromForm] ChangePasswordRequest req)
         {
             if (!ModelState.IsValid)
             {
                 var errors = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                TempData["Error"] = string.IsNullOrWhiteSpace(errors) ? "Invalid password form input." : errors;
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = false, message = string.IsNullOrWhiteSpace(errors) ? "Invalid password form input." : errors });
             }
 
             try
@@ -272,20 +269,18 @@ namespace BankWebApp.Controllers
                 
                 if (!response.IsSuccessful)
                 {
-                    TempData["Error"] = $"Change password failed: {(int)response.StatusCode} {response.StatusDescription}. {response.Content}";
+                    var msg = $"Change password failed: {(int)response.StatusCode} {response.StatusDescription}. {response.Content}";
+                    return Json(new { success = false, message = msg });
                 }
                 else
                 {
-                    TempData["Message"] = $"Password updated for {req.Username}.";
+                    return Json(new { success = true, message = $"Password updated for {req.Username}." });
                 }
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"ChangeUserPassword error: {ex.Message}";
+                return Json(new { success = false, message = $"ChangeUserPassword error: {ex.Message}" });
             }
-
-            // Redirect to reload full layout and scripts so Bootstrap remains active
-            return RedirectToAction(nameof(Index));
         }
 
         // Search users by username or email

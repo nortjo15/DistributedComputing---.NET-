@@ -116,7 +116,7 @@
 <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form asp-controller="Admin" asp-action="ChangeUserPassword" method="post">
+            <form id="changePasswordForm">
                 @Html.AntiForgeryToken()
                 <div class="modal-header">
                     <h5 class="modal-title">Change password for <span id="cp-username-display"></span></h5>
@@ -131,7 +131,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">Change Password</button>
+                    <button type="button" class="btn btn-warning" onclick="submitPasswordChange()">Change Password</button>
                 </div>
             </form>
         </div>
@@ -269,5 +269,35 @@
                 modalInstance.show();
             });
         });
+
+        function submitPasswordChange() {
+            const form = $('#changePasswordForm');
+            const url = '@Url.Action("ChangeUserPassword", "Admin")';
+
+            // Submit form using AJAX
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: form.serialize(),
+                success: function (response) {
+                    // Handle success response
+                    if (response.success) {
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+                        modal.hide();
+
+                        // Show success message
+                        alert(response.message);
+                    } else {
+                        // Show error message
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    // Handle error
+                    alert('An error occurred while changing the password. Please try again.');
+                }
+            });
+        }
     </script>
 }

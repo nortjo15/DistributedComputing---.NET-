@@ -777,5 +777,37 @@ function changeUserPassword() {
     
     // Clear the form
     document.getElementById('cp-new-password').value = '';
-   
+}
+
+function submitPasswordChange() {
+    const form = document.getElementById('changePasswordForm');
+    const formData = new FormData(form);
+
+    fetch('/Admin/ChangeUserPassword', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message (you can use a toast notification or alert)
+            alert(data.message);
+            
+            // Close the modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+            if (modal) {
+                modal.hide();
+            }
+            
+            // Clear the form
+            form.reset();
+        } else {
+            // Show error message
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error changing password: ' + error.message);
+    });
 }
