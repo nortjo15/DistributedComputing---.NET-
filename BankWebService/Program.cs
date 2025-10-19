@@ -35,6 +35,9 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+// Redirect root URL to Swagger
+app.MapGet("/", () => Results.Redirect("/swagger"));
+
 // Enable both MVC and API routing
 app.MapControllers();
 
