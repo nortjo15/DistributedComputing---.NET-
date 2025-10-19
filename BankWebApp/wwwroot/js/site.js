@@ -12,14 +12,18 @@ function loadView(status, role = null) {
         selectedRole = role;
     }
 
-    if (status == "default")
+    if (status === "default")
         apiUrl = '/api/login/defaultview';
 
     if (status === "login") {
-        if (role == null) {
+        apiUrl = '/api/login/defaultview';
+    }
+
+    if (status === "authview") {
+        if (selectedRole == null) {
             apiUrl = '/api/login/error';
         } else {
-            apiUrl = '/api/login/authview/' + role;
+            apiUrl = '/api/login/authview/' + selectedRole;
         }
     }
 
@@ -43,13 +47,11 @@ function loadView(status, role = null) {
     fetch(apiUrl)
         .then(response => {
             if (!response.ok) {
-                console.log("response", response)
                 throw new Error('Network response was not ok');
             }
             return response.text();
         })
         .then(data => {
-            // Handle the data from the API
             mainElement.innerHTML = data;
             if (status === "logout") {
                 const logoutButton = document.getElementById('LogoutButton');
@@ -59,7 +61,6 @@ function loadView(status, role = null) {
             }
         })
         .catch(error => {
-            // Handle any errors that occurred during the fetch
             console.error('Fetch error:', error);
         });
 }
@@ -68,6 +69,16 @@ function performAuth() {
     var name = document.getElementById('SName').value;
     var password = document.getElementById('SPass').value;
     var role = selectedRole;
+    
+    if (!role) {
+        alert('Please select a role first by going back to the role selection.');
+        return;
+    }
+    
+    if (!name || !password) {
+        alert('Please enter both username and password.');
+        return;
+    }
     
     var data = {
         Username: name,
@@ -95,8 +106,8 @@ function performAuth() {
             return response.json();
         })
         .then(data => {
-            // Handle the data from the API
             const jsonObject = data;
+            
             if (jsonObject.login) {
                 loadView("authview", jsonObject.role);
                 const logoutButton = document.getElementById('LogoutButton');
@@ -104,12 +115,14 @@ function performAuth() {
                     logoutButton.style.display = "block";
                 }
             } else {
+                alert('Login failed. Please check your credentials.');
                 loadView("error");
             }
         })
         .catch(error => {
-            // Handle any errors that occurred during the fetch
-            console.error('Fetch error:', error);
+            console.error('Authentication fetch error:', error);
+            alert('Authentication error: ' + error.message);
+            loadView("error");
         });
 }
 
