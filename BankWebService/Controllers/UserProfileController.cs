@@ -81,5 +81,21 @@ namespace BankWebService.Controllers
                 Picture = p.Picture
             };
         }
+
+        [HttpGet("by-phone/{phone}")]
+        public async Task<ActionResult<UserProfileDto>> GetProfileByPhone(string phone)
+        {
+            var p = await _context.UserProfiles.FirstOrDefaultAsync(u => u.Phone == phone);
+            if (p == null) return NotFound();
+
+            return new UserProfileDto
+            {
+                Username = p.Username,
+                Email = p.Email,
+                Address = p.Address,
+                Phone = p.Phone,
+                Picture = p.Picture
+            };
+        }
     }
 }
