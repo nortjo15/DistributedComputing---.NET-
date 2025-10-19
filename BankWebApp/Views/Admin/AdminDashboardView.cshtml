@@ -141,19 +141,11 @@
                 <td>@a.Email</td>
                 <td class="text-end">@a.Balance</td>
                 <td>
-                    <form asp-controller="Admin" asp-action="UpdateAccount" method="post" class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="AccountNumber" value="@a.AccountNumber" />
-                        <input type="hidden" name="Username" value="@a.Username" />
-                        <input type="hidden" name="Email" value="@a.Email" />
-                        <input type="number" name="Balance" step="0.01" class="form-control form-control-sm d-inline w-auto" value="@a.Balance" />
-                        <button type="submit" class="btn btn-sm btn-outline-primary ms-1">Update</button>
-                    </form>
-                    <form asp-controller="Admin" asp-action="DeleteAccount" method="post" class="d-inline ms-2" onsubmit="return confirm('Delete account @a.AccountNumber?');">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="accountNumber" value="@a.AccountNumber" />
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                    </form>
+                    <div class="d-inline-flex align-items-center">
+                        <input type="number" id="balance-@a.AccountNumber" step="0.01" class="form-control form-control-sm w-auto me-1" value="@a.Balance" />
+                        <button type="button" class="btn btn-sm btn-outline-primary me-1" onclick="updateAccount(@a.AccountNumber, '@a.Username', '@a.Email')">Update</button>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="deleteAccount(@a.AccountNumber)">Delete</button>
                 </td>
             </tr>
         }
@@ -254,48 +246,5 @@
       modal.show();
     });
   });
-
-  // Create Account function
-  function createAccount() {
-    const username = document.getElementById('username').value;
-    const accountName = document.getElementById('accountName').value;
-    const email = document.getElementById('email').value;
-    const balance = parseFloat(document.getElementById('balance').value);
-
-    console.log('Creating account with:', { username, accountName, email, balance });
-
-    const data = {
-      Username: username,
-      Name: accountName,
-      Email: email,
-      Balance: balance
-    };
-
-    fetch('/Admin/CreateAccount', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => {
-      console.log('Response status:', response.status);
-      return response.text();
-    })
-    .then(html => {
-      console.log('Received HTML response, updating main content');
-      document.getElementById('main').innerHTML = html;
-      
-      // Clear the form inputs
-      document.getElementById('username').value = '';
-      document.getElementById('accountName').value = '';
-      document.getElementById('email').value = '';
-      document.getElementById('balance').value = '0';
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('Error creating account: ' + error.message);
-    });
-  }
 </script>
 }
