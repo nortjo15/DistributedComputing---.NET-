@@ -11,24 +11,46 @@ namespace BankWebService.Controllers
     public class AccountController : ControllerBase
     {
         private readonly DBManager _context;
-        public AccountController(DBManager context) => _context = context;
+        private readonly ILogger<AccountController> _logger;
+
+        public AccountController(DBManager context, ILogger<AccountController> logger)
+        {
+            _context = context;
+            _logger = logger;
+        }
 
         [HttpPost("create_account")]
-        public async Task<ActionResult<AccountDto>> CreateAccount(Account account)
+        public async Task<ActionResult<AccountDto>> CreateAccount(CreateAccountRequest request)
         {
-            _context.Accounts.Add(account);
-            await _context.SaveChangesAsync();
-
-            var dto = new AccountDto
+            try
             {
-                AccountNumber = account.AccountNumber,
-                Name = account.Name,
-                Balance = account.Balance,
-                Username = account.Username,
-                Email = account.Email
-            };
+                var account = new Account
+                {
+                    Name = request.Name,
+                    Username = request.Username,
+                    Email = request.Email,
+                    Balance = request.Balance
+                };
 
-            return CreatedAtAction(nameof(GetAccount), new { accountNumber = account.AccountNumber }, dto);
+                _context.Accounts.Add(account);
+                await _context.SaveChangesAsync();
+
+                var dto = new AccountDto
+                {
+                    AccountNumber = account.AccountNumber,
+                    Name = account.Name,
+                    Balance = account.Balance,
+                    Username = account.Username,
+                    Email = account.Email
+                };
+
+                return CreatedAtAction(nameof(GetAccount), new { accountNumber = account.AccountNumber }, dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to create account");
+                return BadRequest($"Failed to create account: {ex.Message}");
+            }
         }
 
         [HttpGet("{accountNumber}")]
