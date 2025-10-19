@@ -39,24 +39,27 @@
 <div class="card mb-4">
     <div class="card-header">Create Account</div>
     <div class="card-body">
-        <form asp-controller="Admin" asp-action="CreateAccount" method="post" class="row gy-2 gx-2 align-items-end">
-            @Html.AntiForgeryToken()
-            <div class="col-md-3">
+        <div class="row gy-2 gx-2 align-items-end">
+            <div class="col-md-2">
                 <label class="form-label">Username</label>
-                <input name="Username" class="form-control" required />
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">Email</label>
-                <input name="Email" class="form-control" />
+                <input id="username" class="form-control" required />
             </div>
             <div class="col-md-3">
-                <label class="form-label">Starting Balance</label>
-                <input name="Balance" type="number" step="0.01" class="form-control" value="0" />
+                <label class="form-label">Account Name</label>
+                <input id="accountName" class="form-control" required />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Email</label>
+                <input id="email" class="form-control" />
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-primary">Create</button>
+                <label class="form-label">Starting Balance</label>
+                <input id="balance" type="number" step="0.01" class="form-control" value="0" />
             </div>
-        </form>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-primary" onclick="createAccount()">Create</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -251,5 +254,48 @@
       modal.show();
     });
   });
+
+  // Create Account function
+  function createAccount() {
+    const username = document.getElementById('username').value;
+    const accountName = document.getElementById('accountName').value;
+    const email = document.getElementById('email').value;
+    const balance = parseFloat(document.getElementById('balance').value);
+
+    console.log('Creating account with:', { username, accountName, email, balance });
+
+    const data = {
+      Username: username,
+      Name: accountName,
+      Email: email,
+      Balance: balance
+    };
+
+    fetch('/Admin/CreateAccount', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      console.log('Response status:', response.status);
+      return response.text();
+    })
+    .then(html => {
+      console.log('Received HTML response, updating main content');
+      document.getElementById('main').innerHTML = html;
+      
+      // Clear the form inputs
+      document.getElementById('username').value = '';
+      document.getElementById('accountName').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('balance').value = '0';
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Error creating account: ' + error.message);
+    });
+  }
 </script>
 }

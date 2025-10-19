@@ -74,7 +74,6 @@ namespace BankWebApp.Controllers
 
         // C - Create account
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateAccount(CreateAccountRequest req)
         {
             if (!ModelState.IsValid)
@@ -82,7 +81,7 @@ namespace BankWebApp.Controllers
                 var errors = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = string.IsNullOrWhiteSpace(errors) ? "Invalid form input." : errors;
                 _logger.LogWarning("CreateAccount invalid: {Errors}", TempData["Error"]);
-                return RedirectToAction(nameof(Index));
+                return await GetView();
             }
 
             var client = _clientFactory.CreateClient("BankApi");
@@ -94,19 +93,20 @@ namespace BankWebApp.Controllers
                 if (!userCheck.IsSuccessStatusCode)
                 {
                     TempData["Error"] = $"User '{req.Username}' does not exist. Create the user profile first.";
-                    return RedirectToAction(nameof(Index));
+                    return await GetView();
                 }
             }
             catch (Exception ex)
             {
                 TempData["Error"] = $"Failed to verify user '{req.Username}': {ex.Message}";
                 _logger.LogError(ex, "User existence check failed");
-                return RedirectToAction(nameof(Index));
+                return await GetView();
             }
 
             var account = new AccountDto
             {
                 Username = req.Username,
+                Name = req.Name,
                 Email = req.Email,
                 Balance = req.Balance
             };
@@ -132,7 +132,7 @@ namespace BankWebApp.Controllers
                 _logger.LogError(ex, "CreateAccount error");
             }
 
-            return RedirectToAction(nameof(Index));
+            return await GetView();
         }
 
         // R - Get account by number (optional: highlight on page)
@@ -157,7 +157,7 @@ namespace BankWebApp.Controllers
                 TempData["Error"] = $"GetAccount error: {ex.Message}";
                 _logger.LogError(ex, "GetAccount error for {AccountNumber}", accountNumber);
             }
-            return RedirectToAction(nameof(Index));
+            return await GetView();
         }
 
         // U - Update account
@@ -170,7 +170,7 @@ namespace BankWebApp.Controllers
                 var errors = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = string.IsNullOrWhiteSpace(errors) ? "Invalid form input." : errors;
                 _logger.LogWarning("UpdateAccount invalid: {Errors}", TempData["Error"]);
-                return RedirectToAction(nameof(Index));
+                return await GetView();
             }
 
             var client = _clientFactory.CreateClient("BankApi");
@@ -194,7 +194,7 @@ namespace BankWebApp.Controllers
                 TempData["Error"] = $"UpdateAccount error: {ex.Message}";
                 _logger.LogError(ex, "UpdateAccount error for {AccountNumber}", account.AccountNumber);
             }
-            return RedirectToAction(nameof(Index));
+            return await GetView();
         }
 
         // D - Delete account
@@ -223,7 +223,7 @@ namespace BankWebApp.Controllers
                 TempData["Error"] = $"DeleteAccount error: {ex.Message}";
                 _logger.LogError(ex, "DeleteAccount error for {AccountNumber}", accountNumber);
             }
-            return RedirectToAction(nameof(Index));
+            return await GetView();
         }
 
         // Change a user's password (from modal)
@@ -235,7 +235,7 @@ namespace BankWebApp.Controllers
             {
                 var errors = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = string.IsNullOrWhiteSpace(errors) ? "Invalid password form input." : errors;
-                return RedirectToAction(nameof(Index));
+                return await GetView();
             }
 
             var client = _clientFactory.CreateClient("BankApi");
@@ -258,7 +258,7 @@ namespace BankWebApp.Controllers
                 TempData["Error"] = $"ChangeUserPassword error: {ex.Message}";
             }
 
-            return RedirectToAction(nameof(Index));
+            return await GetView();
         }
     }
 }
