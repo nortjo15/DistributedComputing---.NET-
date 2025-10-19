@@ -4,6 +4,20 @@
 }
 
 <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        @if (Model?.Profile != null)
+        {
+            <h2>Welcome, @Model.Profile.Username</h2>
+        }
+        else
+        {
+            <h2>User Dashboard</h2>
+        }
+        <button type="button" class="btn btn-outline-danger" onclick="performLogout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </div>
+
     @if (TempData["Message"] != null)
     {
         <div class="alert alert-info alert-dismissible fade show" role="alert">
@@ -11,7 +25,22 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
-    <h2 class="mb-4 text-center">Welcome, @Model.Profile?.Username</h2>
+    
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model?.Profile == null)
+    {
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Unable to load user data</h4>
+            <p>There was a problem connecting to the bank service. Please try again later or contact support if the problem persists.</p>
+        </div>
+    }
 
     <div class="row">
         <!-- Profile Info -->
@@ -21,10 +50,17 @@
                     <strong>Profile Information</strong>
                 </div>
                 <div class="card-body">
-                    <p><strong>Username:</strong> @Model.Profile?.Username</p>
-                    <p><strong>Email:</strong> @Model.Profile?.Email</p>
-                    <p><strong>Address:</strong> @Model.Profile?.Address</p>
-                    <p><strong>Phone:</strong> @Model.Profile?.Phone</p>
+                    @if (Model?.Profile != null)
+                    {
+                        <p><strong>Username:</strong> @Model.Profile.Username</p>
+                        <p><strong>Email:</strong> @Model.Profile.Email</p>
+                        <p><strong>Address:</strong> @Model.Profile.Address</p>
+                        <p><strong>Phone:</strong> @Model.Profile.Phone</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Profile information unavailable</p>
+                    }
                 </div>
             </div>
         </div>
@@ -44,11 +80,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var a in Model.Accounts?.Where(x => x.Username == Model.Profile?.Username) ?? new List<BankWebApp.Models.AccountDto>())
+                            @{
+                                var userAccounts = Model?.Accounts?.Where(x => x.Username == Model?.Profile?.Username) ?? new List<BankWebApp.Models.AccountDto>();
+                            }
+                            @if (userAccounts.Any())
+                            {
+                                @foreach (var a in userAccounts)
+                                {
+                                    <tr>
+                                        <td>@a.Name</td>
+                                        <td>@a.Balance.ToString("C")</td>
+                                    </tr>
+                                }
+                            }
+                            else
                             {
                                 <tr>
-                                    <td>@a.Name</td>
-                                    <td>@a.Balance.ToString("C")</td>
+                                    <td colspan="2" class="text-center text-muted">No accounts available</td>
                                 </tr>
                             }
                         </tbody>
@@ -74,27 +122,27 @@
                 </thead>
                 <tbody>
                     @{
-                        var userAccounts = Model.Accounts?.Where(a => a.Username == Model.Profile?.Username)
+                        var accountNumbers = Model?.Accounts?.Where(a => a.Username == Model?.Profile?.Username)
                         .Select(a => a.AccountNumber)
                         .ToHashSet() ?? new HashSet<int>();
-                        var userTx = Model.Transactions?.Where(t => userAccounts.Contains(t.AccountNumber)) ?? new List<BankWebApp.Models.TransactionDto>();
+                        var userTx = Model?.Transactions?.Where(t => accountNumbers.Contains(t.AccountNumber)) ?? new List<BankWebApp.Models.TransactionDto>();
                     }
                     @if (userTx.Any())
                     {
                         foreach (var transaction in userTx)
                         {
-                            var account = Model.Accounts?.FirstOrDefault(a => a.AccountNumber == transaction.AccountNumber);
+                            var account = Model?.Accounts?.FirstOrDefault(a => a.AccountNumber == transaction.AccountNumber);
                             <tr>
                                 <td>@transaction.Type</td>
                                 <td>@transaction.Amount.ToString("C")</td>
-                                <td>@(account != null ? account.Name : "Unknown")</td>
+                                <td>@(account?.Name ?? "Unknown")</td>
                             </tr>
                         }
                     }
                     else
                     {
                         <tr>
-                            <td colspan="4" class="text-center text-muted">No transactions available.</td>
+                            <td colspan="3" class="text-center text-muted">No transactions available.</td>
                         </tr>
                     }
                 </tbody>
@@ -103,86 +151,94 @@
     </div>
 
     <!-- Money Transfer -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-warning">
-            <strong>Money Transfer</strong>
-        </div>
-        <div class="card-body">
-            <form asp-action="Transfer" method="post" id="transferForm">
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label class="form-label">From Account</label>
-                        <select name="FromAccountId" id="fromAccount" class="form-select" required>
-                            <option value="">Select Account</option>
-                            @foreach (var a in Model.Accounts?.Where(x => x.Username == Model.Profile?.Username) ?? new List<BankWebApp.Models.AccountDto>())
-                            {
-                                <option value="@a.AccountNumber">@a.Name</option>
-                            }
-                        </select>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label">Recipient User</label>
-                        <select id="toUser" class="form-select" required>
-                            <option value="">Select User</option>
-                            @foreach (var p in Model.Profiles ?? new List<BankWebApp.Models.UserProfileDto>())
-                            {
-                                if(!p.Username.ToLower().Contains("admin"))
+    @if (Model?.Profile != null && (Model?.Accounts?.Any(x => x.Username == Model.Profile.Username) ?? false))
+    {
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-warning">
+                <strong>Money Transfer</strong>
+            </div>
+            <div class="card-body">
+                <form asp-action="Transfer" method="post" id="transferForm">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">From Account</label>
+                            <select name="FromAccountId" id="fromAccount" class="form-select" required>
+                                <option value="">Select Account</option>
+                                @foreach (var a in Model.Accounts.Where(x => x.Username == Model.Profile.Username))
                                 {
-                                    <option value="@p.Username">@p.Username</option>
+                                    <option value="@a.AccountNumber">@a.Name</option>
                                 }
-                            }
-                        </select>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Recipient User</label>
+                            <select id="toUser" class="form-select" required>
+                                <option value="">Select User</option>
+                                @if (Model?.Profiles != null)
+                                {
+                                    @foreach (var p in Model.Profiles)
+                                    {
+                                        if(!p.Username.ToLower().Contains("admin"))
+                                        {
+                                            <option value="@p.Username">@p.Username</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">To Account</label>
+                            <select name="ToAccountId" id="toAccount" class="form-select" required disabled>
+                                <option value="">Select Account</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label">To Account</label>
-                        <select name="ToAccountId" id="toAccount" class="form-select" required disabled>
-                            <option value="">Select Account</option>
-                        </select>
+                    <div class="mb-3">
+                        <label class="form-label">Amount</label>
+                        <input type="number" step="0.01" name="Amount" class="form-control" required />
                     </div>
-                </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Amount</label>
-                    <input type="number" step="0.01" name="Amount" class="form-control" required />
-                </div>
-
-                <button type="submit" class="btn btn-primary">Submit Transfer</button>
-            </form>
+                    <button type="submit" class="btn btn-primary">Submit Transfer</button>
+                </form>
+            </div>
         </div>
-    </div>
+    }
 
     <!-- Security -->
-    <div class="card shadow-sm">
+    @* <div class="card shadow-sm">
         <div class="card-header bg-secondary text-white">
             <strong>Security</strong>
         </div>
         <div class="card-body">
             <p>You can reset your password on the <a asp-action="Security">Security Page</a>.</p>
         </div>
-    </div>
+    </div> *@
 </div>
 
 @section Scripts {
     <script>
-        const allAccounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Accounts ?? new List<BankWebApp.Models.AccountDto>()));
+        const allAccounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model?.Accounts ?? new List<BankWebApp.Models.AccountDto>()));
 
-        document.getElementById('toUser').addEventListener('change', function () {
+        document.getElementById('toUser')?.addEventListener('change', function () {
             const selectedUser = this.value;
             const toAccountSelect = document.getElementById('toAccount');
-            toAccountSelect.innerHTML = '<option value="">Select Account</option>';
-            toAccountSelect.disabled = true;
+            if (toAccountSelect) {
+                toAccountSelect.innerHTML = '<option value="">Select Account</option>';
+                toAccountSelect.disabled = true;
 
-            if (selectedUser) {
-                const accounts = allAccounts.filter(a => a.username === selectedUser || a.Username === selectedUser);
-                accounts.forEach(a => {
-                    const opt = document.createElement('option');
-                    opt.value = a.accountNumber || a.AccountNumber;
-                    opt.textContent = `${a.name || a.Name}`;
-                    toAccountSelect.appendChild(opt);
-                });
-                toAccountSelect.disabled = accounts.length === 0;
+                if (selectedUser) {
+                    const accounts = allAccounts.filter(a => a.username === selectedUser || a.Username === selectedUser);
+                    accounts.forEach(a => {
+                        const opt = document.createElement('option');
+                        opt.value = a.accountNumber || a.AccountNumber;
+                        opt.textContent = `${a.name || a.Name}`;
+                        toAccountSelect.appendChild(opt);
+                    });
+                    toAccountSelect.disabled = accounts.length === 0;
+                }
             }
         });
     </script>

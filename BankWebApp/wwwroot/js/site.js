@@ -43,7 +43,6 @@ function loadView(status, role = null) {
         return;
     }
 
-    console.log("API URL:", apiUrl)
     fetch(apiUrl)
         .then(response => {
             if (!response.ok) {
@@ -54,10 +53,9 @@ function loadView(status, role = null) {
         .then(data => {
             mainElement.innerHTML = data;
             if (status === "logout") {
-                const logoutButton = document.getElementById('LogoutButton');
-                if (logoutButton) {
-                    logoutButton.style.display = "none";
-                }
+                // After logout, navigate back to role selection
+                selectedRole = null; // Clear selected role
+                setTimeout(() => loadView(), 100); // Load role selection view
             }
         })
         .catch(error => {
@@ -110,10 +108,6 @@ function performAuth() {
             
             if (jsonObject.login) {
                 loadView("authview", jsonObject.role);
-                const logoutButton = document.getElementById('LogoutButton');
-                if (logoutButton) {
-                    logoutButton.style.display = "block";
-                }
             } else {
                 alert('Login failed. Please check your credentials.');
                 loadView("error");
@@ -124,6 +118,12 @@ function performAuth() {
             alert('Authentication error: ' + error.message);
             loadView("error");
         });
+}
+
+function performLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        loadView("logout");
+    }
 }
 
 // DOMContentLoaded event

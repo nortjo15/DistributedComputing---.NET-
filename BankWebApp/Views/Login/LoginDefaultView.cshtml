@@ -8,17 +8,21 @@
             <div class="card shadow">
                 <div class="card-header text-center bg-primary text-white">
                     <h4>Login</h4>
+                    <small id="roleDisplay" class="text-light"></small>
                 </div>
                 <div class="card-body">
-                    <div id="LoginForm">
+                    <div>
                         <div class="mb-3">
                             <input type="text" id="SName" name="SUname" class="form-control" placeholder="User Name" />
                         </div>
                         <div class="mb-3">
                             <input type="password" id="SPass" name="SPassword" class="form-control" placeholder="Password" />
                         </div>
-                        <div class="d-grid">
+                        <div class="d-grid gap-2">
                             <button type="button" id="SubmitButton" class="btn btn-primary" onclick="performAuth()">Submit</button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="loadView()">
+                                <i class="fas fa-arrow-left"></i> Back to Role Selection
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -26,3 +30,15 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Display the selected role in the login form
+    if (typeof selectedRole !== 'undefined' && selectedRole) {
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleDisplay = document.getElementById('roleDisplay');
+            if (roleDisplay) {
+                roleDisplay.textContent = `Logging in as: ${selectedRole.toUpperCase()}`;
+            }
+        });
+    }
+</script>

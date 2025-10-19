@@ -1,30 +1,34 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Login Error";
 }
 
-<div>
-    <p> User or Password Does not Match try again </p>
-
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-4">
-                <div class="card shadow">
-                    <div class="card-header text-center bg-primary text-white">
-                        <h4>Login</h4>
-                    </div>
-                    <div class="card-body">
-                        <div id="LoginForm">
-                            <div class="mb-3">
-                                <input type="text" id="SName" name="SUname" class="form-control" placeholder="User Name" />
-                            </div>
-                            <div class="mb-3">
-                                <input type="password" id="SPass" name="SPassword" class="form-control" placeholder="Password" />
-                            </div>
-                            <div class="d-grid">
-                                <button type="button" id="SubmitButton" class="btn btn-primary" onclick="performAuth()">Submit</button>
-                            </div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="alert alert-danger text-center mb-4">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Login Failed</strong><br>
+                Username or Password does not match. Please try again.
+            </div>
+            
+            <div class="card shadow">
+                <div class="card-header text-center bg-primary text-white">
+                    <h4>Login</h4>
+                    <small id="roleDisplay" class="text-light"></small>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <div class="mb-3">
+                            <input type="text" id="SName" name="SUname" class="form-control" placeholder="User Name" />
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" id="SPass" name="SPassword" class="form-control" placeholder="Password" />
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="button" id="SubmitButton" class="btn btn-primary" onclick="performAuth()">Try Again</button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="loadView()">
+                                <i class="fas fa-arrow-left"></i> Back to Role Selection
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -32,3 +36,15 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Display the selected role in the login form
+    if (typeof selectedRole !== 'undefined' && selectedRole) {
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleDisplay = document.getElementById('roleDisplay');
+            if (roleDisplay) {
+                roleDisplay.textContent = `Logging in as: ${selectedRole.toUpperCase()}`;
+            }
+        });
+    }
+</script>
