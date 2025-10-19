@@ -1,19 +1,17 @@
 ﻿using BankWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
+using Newtonsoft.Json;
+using RestSharp;
 
 namespace BankWebApp.Controllers
 {
     public class UserController : Controller
     {
-        private readonly IHttpClientFactory _clientFactory;
-        private readonly ILogger<UserController> _logger;
+        private readonly RestClient _client;
 
-        public UserController(IHttpClientFactory clientFactory, ILogger<UserController> logger)
+        public UserController()
         {
-            _clientFactory = clientFactory;
-            _logger = logger;
+            _client = new RestClient("http://localhost:5142");
         }
 
         public async Task<IActionResult> Index()
@@ -23,35 +21,50 @@ namespace BankWebApp.Controllers
 
         public async Task<IActionResult> GetView()
         {
-            var client = _clientFactory.CreateClient("BankApi");
-            client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", "dummy-token");
-
             try
             {
                 var username = Request.Cookies["Username"];
 
-                var profileTask = client.GetFromJsonAsync<UserProfileDto>($"api/UserProfile/by-username/{username}");
-                var accountsTask = client.GetFromJsonAsync<List<AccountDto>>("api/Account/all");
-                var transactionsTask = client.GetFromJsonAsync<List<TransactionDto>>("api/Transaction/all");
-                var profilesTask = client.GetFromJsonAsync<List<UserProfileDto>>("api/UserProfile/all");
+                var profileRequest = new RestRequest($"/api/UserProfile/by-username/{username}");
+                var accountsRequest = new RestRequest("/api/Account/all");
+                var transactionsRequest = new RestRequest("/api/Transaction/all");
+                var profilesRequest = new RestRequest("/api/UserProfile/all");
+
+                var profileTask = _client.ExecuteAsync(profileRequest);
+                var accountsTask = _client.ExecuteAsync(accountsRequest);
+                var transactionsTask = _client.ExecuteAsync(transactionsRequest);
+                var profilesTask = _client.ExecuteAsync(profilesRequest);
                 
-                await Task.WhenAll(profileTask!, accountsTask!, transactionsTask!, profilesTask!);
+                await Task.WhenAll(profileTask, accountsTask, transactionsTask, profilesTask);
+
+                var profile = profileTask.Result.IsSuccessful && profileTask.Result.Content != null
+                    ? JsonConvert.DeserializeObject<UserProfileDto>(profileTask.Result.Content)
+                    : null;
+
+                var accounts = accountsTask.Result.IsSuccessful && accountsTask.Result.Content != null
+                    ? JsonConvert.DeserializeObject<List<AccountDto>>(accountsTask.Result.Content) ?? new List<AccountDto>()
+                    : new List<AccountDto>();
+
+                var transactions = transactionsTask.Result.IsSuccessful && transactionsTask.Result.Content != null
+                    ? JsonConvert.DeserializeObject<List<TransactionDto>>(transactionsTask.Result.Content) ?? new List<TransactionDto>()
+                    : new List<TransactionDto>();
+
+                var profiles = profilesTask.Result.IsSuccessful && profilesTask.Result.Content != null
+                    ? JsonConvert.DeserializeObject<List<UserProfileDto>>(profilesTask.Result.Content) ?? new List<UserProfileDto>()
+                    : new List<UserProfileDto>();
 
                 var model = new UserDashboardViewModel
                 {
-                    Profile = profileTask.Result,
-                    Accounts = accountsTask.Result ?? new List<AccountDto>(),
-                    Transactions = transactionsTask.Result ?? new List<TransactionDto>(),
-                    Profiles = profilesTask.Result ?? new List<UserProfileDto>()
+                    Profile = profile,
+                    Accounts = accounts,
+                    Transactions = transactions,
+                    Profiles = profiles
                 };
 
                 return PartialView("UserDashboardView", model);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "API fetch failed");
-                
                 var emptyModel = new UserDashboardViewModel
                 {
                     Profile = null,
@@ -67,37 +80,22 @@ namespace BankWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Transfer(int FromAccountId, int ToAccountId, decimal Amount)
         {
-            var client = _clientFactory.CreateClient("BankApi");
-            client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", "dummy-token");
-
             try
             {
-                _logger.LogInformation($"Withdraw {FromAccountId}, Deposit {ToAccountId}, Amount {Amount}");
+                var withdrawRequest = new RestRequest($"/api/Transaction/withdraw/{FromAccountId}/{Amount}", Method.Post);
+                var withdrawResponse = await _client.ExecuteAsync(withdrawRequest);
 
-                var withdrawResponse = await client.PostAsync(
-                    $"api/Transaction/withdraw/{FromAccountId}/{Amount}", null);
-                _logger.LogInformation($"Withdraw status: {withdrawResponse.StatusCode}");
+                withdrawResponse.ThrowIfError();
 
-                var withdrawContent = await withdrawResponse.Content.ReadAsStringAsync();
-                _logger.LogInformation($"Withdraw response: {withdrawContent}");
+                var depositRequest = new RestRequest($"/api/Transaction/deposit/{ToAccountId}/{Amount}", Method.Post);
+                var depositResponse = await _client.ExecuteAsync(depositRequest);
 
-                withdrawResponse.EnsureSuccessStatusCode();
-
-                var depositResponse = await client.PostAsync(
-                    $"api/Transaction/deposit/{ToAccountId}/{Amount}", null);
-                _logger.LogInformation($"Deposit status: {depositResponse.StatusCode}");
-
-                var depositContent = await depositResponse.Content.ReadAsStringAsync();
-                _logger.LogInformation($"Deposit response: {depositContent}");
-
-                depositResponse.EnsureSuccessStatusCode();
+                depositResponse.ThrowIfError();
 
                 TempData["Message"] = "Transfer completed successfully.";
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Transfer failed");
                 TempData["Message"] = $"Transfer failed: {ex.Message}";
             }
 
